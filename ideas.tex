@@ -1,0 +1,66 @@
+\documentclass{article}
+\usepackage[utf8x]{inputenc}
+
+\title{II2202 Research Methodology and Scientific Writing - Report}
+\author{
+  e.h.wouters\\
+  \texttt{ehwo@kth.se}
+  \and
+  d.s.perju\\
+  \texttt{dsperju@kth.se}
+}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\section{Idea's}
+\begin{enumerate}
+    \item RaspberryPi USB vs Internet speed because of bus sharing
+    \item Compare different sorting algorithms \\
+    https://www.sciencedirect.com/science/article/pii/B9780128037386000124
+    \item Compare different compression algorithms
+    \item Realtime data on Eindhoven air quality \\ https://data.eindhoven.nl/explore/dataset/realtime-luchtkwaliteit-in-eindhoven/information/
+    \item Autonomous accuracy vs human drivers
+    \item Optimal routing algorithm in a dynamic network topology (like a swarm of drones moving around) \\
+    https://kth.microsoftcrmportals.com/en-US/student/view-job/?id=44343c8a-0e22-e811-bbd3-0003ff1c80a7
+    \item Can an autonomous vehicle follow a running leopard in Africa? \\
+    http://journals.sagepub.com/doi/abs/10.1177/0278364906065543
+    \item Berkley's Self-Driving http://bdd-data.berkeley.edu/
+    \item short packet communication toolbox \\
+    https://github.com/yp-mit/spectre
+    \item Memory allocation (malloc) algorithm comparisons. Which would work on hardware?
+    \begin{enumerate}
+        \item https://github.com/aclements/mtrace
+        \item The intelligent memory allocator selector \\
+        https://www.sciencedirect.com/science/article/pii/S1477842415300075
+        \item Object resizing and reclamation through the use of hardware bit-maps \\
+        https://www.sciencedirect.com/science/article/pii/S0141933101001399
+        \item A Simple Fast Memory Allocator \\
+        https://www.sciencedirect.com/science/article/pii/B9780080507552500221
+        \item glibc-utils package contains memusage, a memory usage profiler, mtrace, a memory leak tracer and xtrace, a function call tracer which can be helpful during program debugging
+        \item Code samples to benchmark: https://www.sciencedirect.com/science/article/pii/B9780128009581000206
+        \begin{enumerate}
+            \item Matrix Multiply – Naïve Version (Not Cache Friendly)
+            \item Matrix Multiply—Cache Friendly Version
+            \item Primes Code with Race Conditions
+            \item Primes Code with Race Conditions FIXED
+            \item Conway’s Game of Life Unoptimized
+            \item Conway’s Game of Life Optimized
+        \end{enumerate}
+    \end{enumerate}
+        
+    \item{Study on memory allocation patterns: How do different types of programs dynamically allocate? https://ieeexplore.ieee.org/document/7828283/}
+    \item "We compare five existing dynamic memory allocators optimized for GPUs and show their strengths and weaknesses" \\
+    http://dcgi.felk.cvut.cz/projects/CMalloc/
+    \item This guy is using malloc in his embedded system program (big no no usually) and does his own malloc + recommends some others, so that he gets less fragmentation (the RTOS one actually impedes him from using the memory fully!) -- https://github.com/dimonomid/umm\_malloc
+
+\end{enumerate}
+
+
+
+\end{document}
