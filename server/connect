@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#./vpn2 start
+
+ssh -X -i ~/.ssh/id_rsa eca18086@co13.ics.ele.tue.nl
+
+# screen -r
+
+#./vpn2 stop
