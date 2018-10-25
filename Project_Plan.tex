@@ -5,7 +5,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 
-\title{GPU Memory allocation algorithms for Machine Learning: A survey}
+\title{GPU Dynamic memory allocation algorithms for Machine Learning: A survey}
 \author{
         \textsc{Erik H. Wouters}
             \qquad
@@ -31,6 +31,7 @@
 
 \usepackage{todonotes}
 \usepackage{enumitem}
+\usepackage{pgfgantt}
 
 \usepackage[QX,T1]{fontenc}
 %%\usepackage{pslatex}
@@ -184,22 +185,27 @@ Both authors will share the workload for writing the report, as well as presenti
 
 %\todo{One or more sentences. This describes how the project is to be organized. For example:}
 
-The project will be organized as a two-person project, building upon previously published work and tools. The work and benchmark of \citeauthor{Vinkler2015} \cite{Vinkler2015} will be integrated with the open source machine learning framework TensorFlow \cite{abadi2016}. The previously mentioned benchmark and software need to be integrated in order to create the complete testbed, after which data collection and analysis is able to proceed in parallel.
+The project will be organized as a two-person project, building upon previously published work and tools. The work and benchmark of \citeauthor{Vinkler2015} \cite{Vinkler2015} will be integrated with the open source Machine Learning framework TensorFlow \cite{abadi2016}. The previously mentioned benchmark and software need to be integrated in order to create the complete testbed, after which data collection and analysis is able to proceed in parallel.
 
 \section{Background}
 \label{sec:background}
 
 %\todo{Describe the background for chosen area that is going to be investigated. Write a short description of the area that is going to be investigated. It is a brief description of the necessary background knowledge of the problem area and for carrying out the project. For example:}
 
-% Dynamic memory allocation is a technique well-known and often used by programmers. Much of the work for improvement and research has been devoted in the context of single-core and multi-core CPUs. In comparison to static memory allocation, which happens at program compilation time, dynamic memory allocation brings along issues with its use, such as fragmentation and memory leakage.
-
-% Fragmentation is the cause of many memory allocation errors: as a program runs it finds itself in a situation where, although there is enough free memory to request the allocation of a big contiguous block, it is not possible due to the free memory being spread among uncoalesced smaller allocated blocks of memory that occupy much of the heap. Memory leakage happens when an allocated memory loses all references to it (e.g.: pointers) before it is deallocated, occupying the heap memory until the program is restarted.
-
-% Such problems along with others make dynamic memory allocation algorithms improper for use on specific platforms, such as safety-critical embedded systems \cite{Puaut_2002}. The technique however did progress to be implemented on other systems than generic CPUs, such as GPUs. GPUs introduce new difficulties in implementing dynamic memory allocation, being many-core systems running many more threads than a usual CPU. GPUs however evolved to be used for more than just rendering images, being used for programming techniques such as machine learning. This makes dynamic memory allocation on GPUs important in the context of today's world.
-
 Previous work by \citeauthor{Vinkler2015} \cite{Vinkler2015} compares different GPU dynamic memory allocation algorithms under several workloads, many being generic well-known allocation patterns. \citeauthor{Vinkler2015}, however, propose one extra workload -- the \textit{building of k-d tree data structures} -- to test the algorithms under real-world conditions. Such data structures are used for ray tracing, to produce lighting and shadows when rendering 3D images \cite{Wald_Havran_2006} \cite{Rademacher_1997}.
 
-GPUs have long been used for generating 3D images, such as for games or movies. Along with the appearance of CUDA and OpenGL, GPUs were able to be exploited for their full processing power and new, innovative programming techniques came to light. Machine learning is one example of the latter, gaining much traction as a field of study and a basis for applications today. As such, we propose to conduct a research comparing different GPU dynamic memory allocation algorithms, tested under the workload of a well-known tool used for machine learning: TensorFlow, developed by Google Brain Team \cite{abadi2016}.
+GPUs have long been used for generating 3D images, such as for games or movies. Along with the appearance of CUDA and OpenGL, GPUs were able to be exploited for their full processing power and new, innovative programming techniques came to light. Machine Learning is one example of the latter, gaining much traction as a field of study and a basis for applications today. As such, we propose to conduct a research comparing different GPU dynamic memory allocation algorithms, tested under the workload of a well-known tool used for Machine Learning: TensorFlow, developed by Google Brain Team \cite{abadi2016}.
+
+\section{Theoretical framework}
+\label{sec:theoretical-framework}
+
+Dynamic memory allocation is a technique well-known and often used by programmers. Much of the work for improvement and research has been devoted in the context of single-core and multi-core CPUs \cite{YOU2015}. In comparison to static memory allocation, which happens at program compilation time, dynamic memory allocation brings along issues with its use, such as fragmentation and memory leakage \cite{TRAISTER199099}.
+
+Fragmentation is the cause of many memory allocation errors: as a program runs it finds itself in a situation where, although there is enough free memory to request the allocation of a big contiguous block, it is not possible due to the free memory being spread among uncoalesced smaller allocated blocks of memory that occupy much of the heap. Memory leakage happens when an allocated memory loses all references to it (e.g.: pointers) before it is deallocated, occupying the heap memory until the program is restarted.
+
+Such problems along with others make dynamic memory allocation algorithms improper for use on specific platforms, such as safety-critical embedded systems \cite{Puaut_2002}. The technique however did progress to be implemented on other systems than generic CPUs, such as GPUs. GPUs introduce new difficulties in implementing dynamic memory allocation, being many-core systems running many more threads than a usual CPU. GPUs however evolved to be used for more than just rendering images, being used for programming techniques such as Machine Learning. This makes dynamic memory allocation on GPUs important in the context of today's world.
+
+%Different programming languages offer different ways of managing variables. Most of them use a dynamic memory allocation algorithm. This algorithm returns a memory address when request to create a new variable is executed. In higher level programming languages there is no direct interaction with the memory addresses, but in lower level languages programmers can employ advanced techniques to manage the memory more efficiently for a specific application \cite{TRAISTER199099}.
 
 \section{Problem Statement}
 \label{sec:problem-statement}
@@ -208,34 +214,39 @@ GPUs have long been used for generating 3D images, such as for games or movies. 
 
 % \textbf{\textit{Maybe this book can be cited somewhere:}} \cite{GINSBURG2017345} \\
 
-CUDA offers, to programmers that want to take advantage of GPU's processing power, a proprietary, unpublished algorithm for dynamically allocating memory called \texttt{CudaMalloc}. However, dynamic memory allocation algorithms running on the CPU are often customized for certain programs that require the edge in speed or stability, such as video games, database engines and so on. It is only natural to suspect that machine learning algorithms would be able to deliver faster performances if an allocator tailored for their needs would be selected as well.
+CUDA offers, to programmers who want to take advantage of GPU's processing power, a proprietary, unpublished algorithm for dynamically allocating memory called \texttt{CudaMalloc}. However, dynamic memory allocation algorithms running on the CPU are often customized for certain programs that require the edge in speed or stability, such as video games, database engines and so on. It is only natural to suspect that Machine Learning algorithms would be able to deliver faster performances if an allocator tailored for their needs would be selected as well.
 
-We believe that \texttt{CudaMalloc}, as a general purpose dynamic memory allocation algorithm for the GPU, can be replaced for better performances when using the TensorFlow \cite{abadi2016} library for machine learning processing. Algorithms that possibly perform better are mentioned in the work of \citeauthor{Vinkler2015} \cite{Vinkler2015}. For example, it is suspected that machine learning algorithms allocate many small sized objects \cite{YOU2015}, for which \texttt{CudaMalloc} is indicated as being slow to process than other allocation algorithms in the figure 3a of \cite{Vinkler2015}. We decide to therefore select the better allocation algorithm for the task at hand, through the proposed research.
+We believe that \texttt{CudaMalloc}, as a general purpose dynamic memory allocation algorithm for the GPU, can be replaced for better performances when using the TensorFlow \cite{abadi2016} library for Machine Learning processing. In particular the ResNet-50 implementation of TensorFlow will be evaluated, which is a Convolutional Neural Network (CNN) with many layers and will therefore allocate many small sized objects in the GPU memory \cite{DBLP:HeZRS15}.
+Algorithms that possibly perform better are mentioned in the work of \citeauthor{Vinkler2015} \cite{Vinkler2015}. They state that \texttt{CudaMalloc} is slower to process than other allocation algorithms for allocating many small sized objects, as shown in Figure 3a in \cite{Vinkler2015}. We decide to therefore select the better allocation algorithm for the task at hand, through the proposed research.
 
 \section{Problem}
 \label{sec:problem}
 
 %\todo{State a clear and concise problem that is going to be investigated.  Answer the question What is the real problem? - What is the problem or value proposition addressed by the project? – Ideally one sentence that is very concrete. For example:}
 
-%Fast machine learning processing imposes specific constraints of the dynamic memory allocator that runs on the GPU, 
+%Fast Machine Learning processing imposes specific constraints of the dynamic memory allocator that runs on the GPU, 
 
-The need for fast machine learning processing, by improving the dynamic memory allocation that runs on the GPU.
+The memory allocation pattern of TensorFlow's implementation of ResNet-50 is not a great match for the memory allocator TensorFlow uses, we will investigate which previously published dynamic memory allocation algorithms perform better.
 
-%Select the fastest, state of the art, open source GPU dynamic memory allocation algorithm for a machine learning workload.
+%The need for fast Machine Learning processing, by improving the dynamic memory allocation that runs on the GPU.
+
+%Select the fastest, state of the art, open source GPU dynamic memory allocation algorithm for a Machine Learning workload.
 
 \section{Hypothesis}
 \label{sec:hypothesis}
 
 %\todo{State a hypothesis that you think would be the outcome of your investigation. Answer the question: What is your hypothesis? (Note that the hypothesis must be measurable to be confirmed or falsified. Moreover not all projects have hypothesis.).}
 
-Our hypothesis is that one or more of the algorithms described by \citeauthor{Vinkler2015} \cite{Vinkler2015} perform better as a memory allocator for TensorFlow than the standard \texttt{CudaMalloc} does, in terms of overall speed, fragmentation, scalability and stability when allocation requests vary in size or frequency (consecutive or varied requests).
+Our hypothesis is that one or more of the algorithms described by \citeauthor{Vinkler2015} \cite{Vinkler2015} perform better as a memory allocator for TensorFlow's implementation of ResNet-50 than the stock \texttt{BFCAllocator} or the standard \texttt{CudaMalloc} does, in terms of overall speed, fragmentation and stability.
+
+%when allocation requests vary in size or frequency (consecutive or varied requests).
 
 \section{Purpose}
 \label{sec:purpose}
 
 %\todo{Explain the purpose(s) of your project / investigation (the expected deliverables from the project). Answer the question: Why do this project? (purpose/effect, i.e. – the purpose can be to save environment but the goal is to build a robot that can pick up trash.) Why would you carry out the project? For example:}
 
-Machine learning is a technology that helps with the advancement on many problems we are struggling with today. From drug discovery \cite{Ramsundar_Kearnes_Riley_Webster_Konerding_Pande_2015} to sorting cucumbers by quality \cite{cucumber}, machine learning has applications in domains such as medical, agricultural, security, marketing and many others. It is through the presented project that we want to contribute to the progress of a programming tool that betters the lives of people.
+Machine Learning is a technology that helps with the advancement on many problems we are struggling with today. From drug discovery \cite{Ramsundar_Kearnes_Riley_Webster_Konerding_Pande_2015} to sorting cucumbers by quality \cite{cucumber}, Machine Learning has applications in domains such as medical, agricultural, security, marketing and many others. It is through the presented project that we want to contribute to the progress of a programming tool that betters the lives of people.
 
 \section{Goal(s)}
 \label{sec:goal(s)}
@@ -251,9 +262,11 @@ If we find a faster algorithm, send results and recommendation to the TensorFlow
 %\todo{Describe the tasks and sub tasks that are necessary to complete the work. Grouped into a work breakdown structure. For example:}
 
 Get the evaluation platform ready for the experiment and document the particular setup.
+Write scripts for the setup to ensure repeatibility and consistancy between runs.
+Use the NVIDIA Visual Profiler on the TensorFlow benchmarks to obtain the memory access pattern and distill the characteristics from this pattern.
 Compile TensorFlow and run TensorFlow benchmarks using the standard \texttt{CudaMalloc}.
 Repeat previous step, replacing the memory allocation algorithm with one described by \citeauthor{Vinkler2015} \cite{Vinkler2015}, for a subset of the algorithms in their paper.
-Analize the results of the benchmarks.
+Analyze the results of the benchmarks.
 
 \section{Methods}
 \label{sec:methods}
@@ -262,7 +275,13 @@ Analize the results of the benchmarks.
 
 We will compile TensorFlow on Erik Wouters' HP ZBook workstation laptop (equipped with an NVIDIA K1100M GPU) and run the TensorFlow Convolutional Neural Network benchmarks from \url{https://github.com/tensorflow/benchmarks}. To compare the different memory algorithms, we will repeat the compilation and benchmarking with a subset of the memory allocation algorithms described by \citeauthor{Vinkler2015} \cite{Vinkler2015}.
 
-The project will use the empirical method \cite{bock2001}. As we are evaluating using a well known benchmark from the Machine Learning field, this will provide results that mimic real world performance of these algorithms applied to machine learning \cite{abadi2016}. In order to create results that are as repeatable as possible, each test will be run 5 times and then the times will be averaged together. The NVIDIA K1100M GPU will run in it's default state on Erik Wouters' HP ZBook. For each test, 10 warm-up steps will be done and then the next 100 steps will be averaged.
+The project will use the empirical method \cite{bock2001}. As we are evaluating using a well known benchmark from the Machine Learning field, this will provide results that mimic real world performance of these algorithms applied to Machine Learning \cite{abadi2016}. In order to create results that are as repeatable as possible, each test will be run 5 times and then the times will be averaged together. The NVIDIA K1100M GPU will run in it's default state on Erik Wouters' HP ZBook. For each test, 10 warm-up steps will be done and then the next 100 steps will be averaged.
+
+\section{Results and Analysis}
+\label{sec:results-and-analysis}
+Initial tests have shown that profiling GPU accelerated sessions in TensorFlow takes a lot of compute time. Compiling TensorFlow takes about two hours on the workstation that is used for benchmarking. The full benchmark as it is run on the website of TensorFlow cannot be run on the NVIDIA K1100M GPU, as it will run out of memory. Decreasing the batch size from 32 to 16 fixes this problem.
+
+The ResNet-50 benchmark in its standard form (with batch size 16) takes about 5.5 minutes to run. The full benchmark runs 110 iterations including the warm-up. To run only a single iteration using the NVIDIA Visual Profiler takes 17 hours. It is therefore not feasible to run the full benchmark (with 110 iterations) with the Visual Profiler. However profiling a single iteration provides enough insight in the memory allocation pattern for further analysis.
 
 \section{Milestone chart (time schedule)}
 \label{sec:milestone-chart}
@@ -272,7 +291,7 @@ The project will use the empirical method \cite{bock2001}. As we are evaluating 
 \begin{enumerate}[leftmargin=2cm]
     \item[Sep 19] Finish the project plan
     \item[Sep 21] Presentation of Ethics \& Sustainability of the proposed research
-    \item[Sep 24] Study the algorithms described by \citeauthor{Vinkler2015} \cite{Vinkler2015}, select the most applicable ones for the Machine Learning workload and run test code for them
+    \item[Sep 24] Study the algorithms described by \citeauthor{Vinkler2015} \cite{Vinkler2015}, select the most applicable ones for the Machine Learning workload and run the benchmark code on them
     \item[Oct 01] Prepare testbed for compilation of TensorFlow and run the baseline benchmark
     \item[Oct 12] First draft of the research plan, presentation, and peer review
     \item[Oct 15] Run the experiment for the selected subset of memory allocation algorithms
@@ -284,15 +303,86 @@ The project will use the empirical method \cite{bock2001}. As we are evaluating 
     \item[Jan 15] Deliver final report 
 \end{enumerate}
 
+\noindent A graphical representation of the project plan can be found in Appendix \ref{sec:gantt}.
+
 \bibliography{II2202-report}
 %\todo{If possible, please use the Zotero style: http://people.kth.se/~maguire/ExampleStyle-with-access.csl see also https://www.zotero.org/styles}
 %%\bibliographystyle{IEEEtran}
 \bibliographystyle{myIEEEtran}
 
-%\appendix
-%\section{Insensible Approximation}
+\appendix
+\section{Project Gantt Chart}
+\label{sec:gantt}
 
-%\todo{In this section you can additional information that may be relevant to your reader, but is not an answer to any of the above points. For example:}
+\begin{ganttchart}[vgrid,today=7,
+            x unit=0.70cm,
+            y unit title=0.7cm,
+            y unit chart=0.725cm,
+            bar label font=\footnotesize,
+            milestone label font=\footnotesize,
+            group label font=\footnotesize,
+            title label font=\footnotesize
+]{1}{21}
+    \gantttitle{2018}{18}
+    \gantttitle{2019}{3} \\
+    \gantttitle{Aug}{1}
+    \gantttitle{Sep}{4}
+    \gantttitle{Oct}{4}
+    \gantttitle{Nov}{5}
+    \gantttitle{Dec}{4}
+    \gantttitle{Jan}{3} \\
+    \gantttitle{W1}{1}
+    \gantttitle{W2}{1}
+    \gantttitle{W3}{1}
+    \gantttitle{W4}{1}
+    \gantttitle{W5}{1}
+    \gantttitle{W6}{1}
+    \gantttitle{W7}{1}
+    \gantttitle{W8}{1}
+    \gantttitle{W9}{1}
+    \gantttitle{W10}{1}
+    \gantttitle{W11}{1}
+    \gantttitle{W12}{1}
+    \gantttitle{W13}{1}
+    \gantttitle{W14}{1}
+    \gantttitle{W15}{1}
+    \gantttitle{W16}{1}
+    \gantttitle{W17}{1}
+     \gantttitle{Christmas}{2}
+    \gantttitle{W18}{1}
+    \gantttitle{W19}{1}
+    
+    
+    \ganttgroup{Experiment}{2}{9} \ganttnewline
+    \ganttgroup{Report}{9}{15} \ganttnewline
+    \ganttgroup{Opposition}{13}{17} \ganttnewline
+    
+    \ganttbar{Literature study}{1}{8} \ganttnewline
+    \ganttmilestone{Project plan 1}{2} \ganttnewline
+    \ganttbar{Tools setup}{3}{9} \ganttnewline
+    \ganttmilestone{Project plan 2}{7} \ganttnewline
+    \ganttbar{Obtain data}{9}{11} \ganttnewline
+    \ganttbar{Write report}{9}{19} \ganttnewline
+    
+    \ganttmilestone{First report}{10} \ganttnewline
+    \ganttmilestone{Second report}{15} \ganttnewline
+    \ganttmilestone{Third report}{17} \ganttnewline
+    \ganttmilestone{Final report \& presentation}{20} \ganttnewline
+    \ganttbar{Write opposition}{13}{15} \ganttnewline
+    \ganttmilestone{Opposition}{15} \ganttnewline
+    \ganttlink{elem8}{elem9} % Write report -> First report
+    \ganttlink{elem4}{elem5} % Tools setup -> Obtain data
+    
+    % Link buldge / Link mid tries not to overlap arrows with each other. It's like spacing for arrows.
+    %\ganttlink[link bulge=0.7, link mid=0.3]{elem13}{elem14} % Write opposition -> Opposition
+    \ganttlink{elem13}{elem14} % Write opposition -> Opposition
+    \ganttlink{elem8}{elem10} % Write report -> Second report
+    \ganttlink{elem8}{elem11} % Write report -> Third report
+    \ganttlink{elem8}{elem12} % Write report -> Final report
+    \ganttlink{elem13}{elem12} % Write opposition -> Final report
+    
+    
+    
+\end{ganttchart}
 
-%The total word count is XXX, with XXX words excluding title, authors, milestone/schedule, references, and words in this sentence, i.e., it is a word count from “Allocation of responsibilities” to end of “Method” section.
 \end{document}
