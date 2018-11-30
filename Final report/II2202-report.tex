@@ -140,6 +140,7 @@
 \setcounter{tocdepth}{3}	%% 3 depth levels in TOC
 \setcounter{secnumdepth}{5}
 
+
 \newcommand{\resnettimebfc}{$5.82$}
 \newcommand{\resnettimecuda}{$5.32$}
 \newcommand{\resnettimehalloc}{$?$}
@@ -237,16 +238,14 @@ TensorFlow is an open-source software library that can perform numerical computa
 
 Yet, ever since TensorFlow was developed, its main dynamic memory allocation algorithm for GPU use is the \texttt{BFCAllocator}. In its own source code, \texttt{BFCAllocator} is described to be: \textit{a memory allocator that implements a 'best-fit with coalescing' algorithm.  [...] [It] is essentially a very simple version of Doug Lea's malloc (dlmalloc) \cite{dlmalloc}}.
 
-CUDA's own dynamic memory allocator, \texttt{cuMalloc}, is kept as an easy selectable alternative, before running TensorFlow. It is however composed of proprietary code and does not share anything else but the header file that allows it to be used. As such, we cannot investigate the code to see what type of allocator this is. However \citeauthor{Vinkler2015} states that \texttt{cuMalloc} is relatively slow for small memory allocations.
+CUDA's own dynamic memory allocator, \texttt{cuMalloc}, is kept as an easy selectable alternative, before running TensorFlow. It is however composed of proprietary code and does not share anything else but the header file that only allows it to be used. As such, we cannot investigate the code to see what type of allocator this is. However, \citeauthor{Vinkler2015} states that \texttt{cuMalloc} is relatively slow for allocations of small sized objects \cite{Vinkler2015}.
 % As such, we cannot say what type of allocator \texttt{cuMalloc} is -- as different allocator algorithms can be categorized in different types.
-
-In our initial comparisons, we have found TensorFlow's default allocator, BFCAllocator, to attain ~8 images per second when processing the ResNet-50 model benchmark, while \texttt{cuMalloc} attains only ~5.3 images per second. This proves that there is significance in such a research, as choosing the right dynamic memory allocator can have a large impact on the performance of high end algorithms and computing techniques.
 
 \subsubsection*{Dynamic memory allocation}
 
 Dynamic memory allocation is a technique well-known and often used by programmers. Much of the work for improvement and research on this topic is being devoted to the context of single-core and multi-core general purpose processors \cite{YOU2015}. In comparison to static memory allocation, which happens at program compilation time and is more frequently used in programming, dynamic memory allocation brings along issues with its use, such as fragmentation and memory leaks \cite{TRAISTER199099}.
 
-Such problems make dynamic memory allocation algorithms unsuitable for use on specific platforms, such as safety-critical embedded systems \cite{Puaut_2002}. The technique however did progress to be implemented on systems other than general purpose processors, such as on graphics processing units (GPUs). GPUs introduce new difficulties in implementing dynamic memory allocation, being many-core systems running many more threads, distributed on many more cores than general purpose processors usually have. GPUs however evolved to be used for more than just rendering images, being used for complex programming techniques such as Machine Learning. This makes dynamic memory allocation important in the context of GPUs, in order to attain efficiency for such applications.\todo[inline]{See comment inside LaTeX} %Dragoş' note to self: If we don't get major differences for the performance of the algorithms, we might state that it is "seemingly important" and then say in a new paragraph that "indeed, it is to be seen through the performance measurements if the algorithms are indeed more or less performant"... or something like that}
+Such problems make dynamic memory allocation algorithms unsuitable for use on specific platforms, such as safety-critical embedded systems \cite{Puaut_2002}. The technique however did progress to be implemented on systems other than GPUs. GPUs introduce new difficulties in implementing dynamic memory allocation, being many-core systems running many more threads, distributed on many more cores than general purpose processors usually have. GPUs however evolved to be used for more than just rendering images, being used for complex programming techniques such as \textit{machine learning}. This makes dynamic memory allocation important in the context of GPUs, in order to attain efficiency for such applications.
 
 Literature:
 \url{https://devtalk.nvidia.com/default/topic/878664/custom-memory-allocator-for-cuda-desired/}
@@ -358,6 +357,8 @@ Replication information:
 \section{Results and Analysis}
 \label{sec:results-and-analysis}
 
+In our initial comparisons, we have found TensorFlow's default allocator, BFCAllocator, to attain ~8 images per second when processing the ResNet-50 model benchmark, while \texttt{cuMalloc} attains only ~5.3 images per second. This proves that there is significance in such a research, as choosing the right dynamic memory allocator can have a large impact on the performance of high end algorithms and computing techniques.
+
 The initial benchmarks are shown in table \ref{tab:results}. The images/sec column shows the average amount of images that are processed per second for the different models and allocators. The tests have been repeated five times and averaged over the runs.
 
 \begin{table}[!ht]
@@ -379,7 +380,7 @@ AlexNet   & $32$        & \texttt{BFCMalloc} & \alexnettimebfc    \\ \cline{3-4}
 \begin{figure}
   \caption{A picture of a gull.}
   \centering
-    \includegraphics[width=0.5\textwidth]{"../Quantitative Python/histogram.eps"}
+    \includegraphics[width=0.5\textwidth]{"../Quantitative Python/histogram.pdf"}
 \end{figure}
 
 Initial tests have shown that profiling GPU accelerated sessions in TensorFlow takes a lot of compute time. Compiling TensorFlow takes about two hours on the workstation that is used for benchmarking. The full benchmark as it is run on the website of TensorFlow cannot be run on the NVIDIA K1100M GPU, as it will run out of memory. Decreasing the batch size from 32 to 16 fixes this problem.
