@@ -19,14 +19,14 @@ Step	Img/sec	total_loss
 1	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.346
 10	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.395
 20	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.308
-30	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.798
-40	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.085
+30	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.799
+40	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.086
 50	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	7.934
-60	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.017
-70	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.084
-80	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.259
-90	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.418
-100	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.191
+60	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.018
+70	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.078
+80	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.264
+90	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.399
+100	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.178
 ----------------------------------------------------------------
-total images/sec: 5.82
+total images/sec: 5.81
 ----------------------------------------------------------------

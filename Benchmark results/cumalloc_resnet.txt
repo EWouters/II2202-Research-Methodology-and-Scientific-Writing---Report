@@ -18,15 +18,15 @@ Done warm up
 Step	Img/sec	total_loss
 1	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.346
 10	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.395
-20	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.308
-30	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.800
-40	images/sec: 5.4 +/- 0.0 (jitter = 0.0)	8.087
-50	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	7.934
+20	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.309
+30	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.799
+40	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.085
+50	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	7.931
 60	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.019
-70	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.075
-80	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.263
-90	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.412
-100	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.184
+70	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.084
+80	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.248
+90	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.406
+100	images/sec: 5.3 +/- 0.0 (jitter = 0.0)	8.179
 ----------------------------------------------------------------
-total images/sec: 5.32
+total images/sec: 5.29
 ----------------------------------------------------------------
