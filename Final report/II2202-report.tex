@@ -40,6 +40,9 @@
 
 \usepackage{nameref}
 
+\usepackage[numbers]{natbib}
+\bibliographystyle{IEEEtranN}
+
 %%----------------------------------------------------------------------------
 %%   pcap2tex stuff
 %%----------------------------------------------------------------------------
@@ -224,7 +227,7 @@ In the present research paper, we offer a comparison of the performance of sever
 
 Different dynamic memory allocation algorithms capable to run on the GPU are selected and studied based on different factors (such as \textit{speed}, \textit{memory management} and \textit{object sizes} requested for allocation). The algorithms chosen are: \texttt{CUDAMalloc} (or \texttt{cuMalloc}), \texttt{BFCMalloc} and \texttt{Halloc}.
 
-Descriptions of TensorFlow, the benchmark, the CNN models that are studied, the dynamic memory allocation algorithms and possible issues with dynamic memory allocation in general are under the sub-section \textit{\nameref{sec:theoretical-framework}} of this \textit{\nameref{sec:introduction}} section. In section \ref{sec:questions}, \textit{\nameref{sec:questions}}, it is laid out the conclusions we want to make and our expectations of the results, before running the benchmark. Most algorithms come accompanied with their own descriptions that offer an idea in which situations such algorithms would behave better than in other situations. Section \ref{sec:methods}, \textit{\nameref{sec:methods}}, includes the system configuration on which the the tests were executed, as well as the description of the test paradigm this study entails. Section \ref{sec:results-and-analysis}, \textit{\nameref{sec:results-and-analysis}} includes the final graphs and tables with data after an extensive run of our tests. Here, we also discuss the different aspects that such results entail: there's no one allocator that satisfies all supposed requirements. Finally, under the section \ref{sec:discussion}, \textit{\nameref{sec:discussion}}, we draw a conclusion for what allocators are the best in which cases.
+Descriptions of TensorFlow, the benchmark, the CNN models that are studied, the dynamic memory allocation algorithms selected for study and possible issues with dynamic memory allocation in general are under the sub-section \textit{\nameref{sec:theoretical-framework}} of this \textit{\nameref{sec:introduction}} section. In section \ref{sec:questions}, \textit{\nameref{sec:questions}}, it is laid out the conclusions we want to make and our expectations of the results, before running the benchmark. Most algorithms come accompanied with their own self descriptions that offer an idea in which situations such algorithms would behave better than other algorithms. Section \ref{sec:methods}, \textit{\nameref{sec:methods}}, includes the system configuration on which the the tests were executed, as well as the description of the test paradigm this study entails. Section \ref{sec:results-and-analysis}, \textit{\nameref{sec:results-and-analysis}} includes the final graphs and tables with data after an extensive run of our tests. Here, we also discuss the different aspects that such results entail: there's no one allocator that satisfies all supposed requirements. Finally, under the section \ref{sec:discussion}, \textit{\nameref{sec:discussion}}, we draw a conclusion for what allocators are the best in which cases.
 
 
 
@@ -378,9 +381,10 @@ AlexNet   & $32$        & \texttt{BFCMalloc} & \alexnettimebfc    \\ \cline{3-4}
 \end{table}
 
 \begin{figure}
-  \caption{A picture of a gull.}
   \centering
-    \includegraphics[width=0.5\textwidth]{"../Quantitative Python/histogram.pdf"}
+    \includegraphics[]{../Quantitative Python/histogram.pdf}
+  \caption{Object sizes requested for allocation}
+  \label{fig:hist}
 \end{figure}
 
 Initial tests have shown that profiling GPU accelerated sessions in TensorFlow takes a lot of compute time. Compiling TensorFlow takes about two hours on the workstation that is used for benchmarking. The full benchmark as it is run on the website of TensorFlow cannot be run on the NVIDIA K1100M GPU, as it will run out of memory. Decreasing the batch size from 32 to 16 fixes this problem.
