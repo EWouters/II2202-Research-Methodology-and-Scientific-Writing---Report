@@ -137,6 +137,12 @@
 
 \setcounter{tocdepth}{3}	%% 3 depth levels in TOC
 \setcounter{secnumdepth}{5}
+
+\newcommand{\resnettimebfc}{5.29}
+\newcommand{\resnettimecuda}{6.29}
+\newcommand{\alexnettimebfc}{7.29}
+\newcommand{\alexnettimecuda}{8.29}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% End of preamble
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -160,7 +166,7 @@
 \begin{abstract}
 \label{sec:abstract}
 
-We compare 4 dynamic memory allocators designed for running on GPUs and select the best performing under TensorFlow’s Convolutional Neural Network (CNN) benchmark, running only the \texttt{ResNet-50} model. Our main metric of comparison is the number of images per second processed by the benchmark. Other metrics studied are: object sizes requested for allocation by the benchmark and the frequency in allocation request and in the sizes used. After our performance analysis, we conclude that \texttt{Halloc} algorithm is better than the already used algorithms by TensorFlow, \texttt{CUDAMalloc} and \texttt{BFCMalloc}, in the context of the benchmark itself.\footnote{Not proven yet. Might possibly also be false.}.
+We compare 4 dynamic memory allocators designed for running on GPUs and select the best performing under TensorFlow’s Convolutional Neural Network (CNN) benchmark, running only the ResNet-50 model. Our main metric of comparison is the number of images per second processed by the benchmark. Other metrics studied are: object sizes requested for allocation by the benchmark and the frequency in allocation request and in the sizes used. After our performance analysis, we conclude that \texttt{Halloc} algorithm is better than the already used algorithms by TensorFlow, \texttt{CUDAMalloc} and \texttt{BFCMalloc}, in the context of the benchmark itself.\footnote{Not proven yet. Might possibly also be false.}.
 
 \textbf{Keywords:} Algorithm, Performance, Machine learning, GPU, Dynamic memory, Allocation, TensorFlow
 
@@ -201,19 +207,30 @@ This document requires readers to be familiar with terms and concepts described 
 % the paper \cite{anand_kannan_n-ary_2012}, 
 % and the book \cite{brent_s._baxter_standard_1982}.
 
-Machine learning represents a major and computationally intensive computing technique that is one of the most important drivers of progress, in the context of humankind and of the technology we use today. Many examples of real-life scenarios show how machine learning directly impacts people's day-to-day lives, such as in the application domains of: smart farming\todo[inline]{[1 TODO]}, city vehicle traffic\todo[inline]{[2 TODO]}, video surveillance and so on. It is therefore important to improve such complex computer techniques, by improving the basic computer algorithms on which these advanced techniques are based upon. One such basic technique is dynamic memory allocation.
+%Many examples of real-life scenarios show how machine learning directly impacts people's day-to-day lives, such as in the application domains of: smart farming\todo[inline]{[1 TODO]}, city vehicle traffic\todo[inline]{[2 TODO]}, video surveillance and so on. 
 
-In the present research paper, we aim to compare the performance of several dynamic memory allocation algorithms running on the graphics processing unit (GPU), by interchanging with the ones that are already implemented in the well-known machine learning (ML) software library TensorFlow. We decide to tackle allocation algorithms running on GPUs because machine learning takes advantage of their core structure, threading capabilities and single-instruction multiple-data (SIMD) type of computation, achieving only average performance when running on general purpose processors. TensorFlow already implements \texttt{CUDAMalloc} and \texttt{BFCMalloc} as its two selectable options for GPU allocation, with the latter being the default. In our initial comparison, \texttt{CUDAMalloc} achieves ${\sim}5$ images/second performance when running the \texttt{ResNet-50} benchmark, while \texttt{BFCMalloc} attains ${\sim}8.3$ \texttt{images/second}, showing that, in fact, dynamic memory allocation algorithms can have a big impact on the overall performance of machine learning software.
+%It is therefore important to improve such complex computer techniques, by improving the basic computer algorithms on which these advanced techniques are based upon. One such basic technique is dynamic memory allocation.
 
-Our main metric for comparison is, indeed, the speed of the construction of the \texttt{ResNet-50} model that the benchmark can attain, expressed in \textit{images/second}. It is the main output that the benchmark shows while executing. Additionally, we study the object sizes being allocated throughout the runtime of the benchmark, in order to discuss why some allocators can perform better or worse for certain object sizes are requested for allocation. Furthermore, we consider of interest to change the model sizes wanted to be constructed by the benchmark, as some allocators can prove to be better with memory management than with other factors, successfully obtaining bigger models than its counterparts -- which could interrupt inadvertently when required to construct bigger models.\todo[inline]{We could also try other models}
+Machine learning represents a major and computationally intensive computing technique that is one of the most important drivers of progress of humankind and of the technology we use today. We aim to raise the performance of such a complex programming technique by catering to one of the basic computing techniques it uses: dynamic memory allocation on graphics processing unit (GPU).
+
+% by interchanging with the ones that are already implemented in the well-known machine learning (ML) software library TensorFlow. 
+
+In the present research paper, we offer a comparison of the performance of several dynamic memory allocation algorithms running on the GPU, executed by a benchmark of the well-known machine learning (ML) software library TensorFlow. The benchmark constructs Convolutional Neural Networks (CNN) of different models: ResNet-50, AlexNet.
+
+We select different dynamic memory allocation algorithms capable to run on the GPU and study:
+\begin{itemize}
+\item the speed (measured in \textit{images/second});
+\item adjust the size of the models to see how they manage memory;
+\item blabla
+\end{itemize}
 
 \todo[inline]{Better put ref's here to the sections}
-We describe TensorFlow,\todo[inline]{, the benchmark, \texttt{ResNet-50}, other models} the possible issues with dynamic memory allocation and the allocators being studied under the next, second section, \textit{Theoretical framework}. In the third section, \textit{Research questions, hypotheses}, it is laid out exactly what the questions that this paper attempts to answer are and what the theoretical expectations are for which allocators would be best suited, studying mostly their design descriptions done in section two. Section four, \textit{Method(s)}, includes the system configuration and the methods used to obtain the results and graphs under section five, \textit{results and analysis}, as well as the reasoning behind using some methods rather than others. Finally, under the \textit{Discussion} section, we draw a conclusion for what allocators are the best in which cases.
+We describe TensorFlow,\todo[inline]{, the benchmark, ResNet-50, other models} the possible issues with dynamic memory allocation and the allocators being studied under the next, second section, \textit{Theoretical framework}. In the third section, \textit{Research questions, hypotheses}, it is laid out exactly what the questions that this paper attempts to answer are and what the theoretical expectations are for which allocators would be best suited, studying mostly their design descriptions done in section two. Section four, \textit{Method(s)}, includes the system configuration and the methods used to obtain the results and graphs under section five, \textit{results and analysis}, as well as the reasoning behind using some methods rather than others. Finally, under the \textit{Discussion} section, we draw a conclusion for what allocators are the best in which cases.
 
 
 
 
-\section{Theoretical framework/literature study}
+\subsection{Theoretical framework & Literature study}
 \label{sec:theoretical-framework}
 
 \subsubsection*{TensorFlow}
@@ -225,7 +242,7 @@ Yet, ever since TensorFlow was developed, its main dynamic memory allocation alg
 CUDA's own dynamic memory allocator, \texttt{cuMalloc}, is kept as an alternative, easily selectable before running TensorFlow. It is however composed of proprietary code and does not share anything else but the header file that allows it to be used. As such, we cannot investigate the code to see what type of allocator this is. However \citeauthor{Vinkler2015} states that \texttt{cuMalloc} is relatively slow for small memory allocations.
 % As such, we cannot say what type of allocator \texttt{cuMalloc} is -- as different allocator algorithms can be categorized in different types.
 
-In our initial comparisons, we have found TensorFlow's default allocator, BFCAllocator, to attain ~8 images per second when processing the \texttt{ResNet-50} model benchmark, while \texttt{cuMalloc} attains only ~5.3 images per second. This proves that there is significance in such a research, as choosing the right dynamic memory allocator can have a large impact on the performance of high end algorithms and computing techniques.
+In our initial comparisons, we have found TensorFlow's default allocator, BFCAllocator, to attain ~8 images per second when processing the ResNet-50 model benchmark, while \texttt{cuMalloc} attains only ~5.3 images per second. This proves that there is significance in such a research, as choosing the right dynamic memory allocator can have a large impact on the performance of high end algorithms and computing techniques.
 
 \subsubsection*{Dynamic memory allocation}
 
@@ -240,10 +257,10 @@ Literature:
 
 %Different programming languages offer different ways of managing variables. Most of them use a dynamic memory allocation algorithm. This algorithm returns a memory address when request to create a new variable is executed. In higher level programming languages there is no direct interaction with the memory addresses, but in lower level languages programmers can employ advanced techniques to manage the memory more efficiently for a specific application \cite{TRAISTER199099}.
 
-\section{Research questions, hypotheses}
+\subsection{Research questions, hypotheses}
 \label{sect:questions}
 
-\subsection{Problem Statement}
+\subsusection{Problem Statement}
 \label{sec:problem-statement}
 
 %\todo{Describe the problem(s) that have been found in the area described in the background. Describe the problem area (in detail). For example:}
@@ -252,7 +269,7 @@ Literature:
 
 CUDA offers, to programmers who want to take advantage of GPU's processing power, a proprietary, unpublished algorithm for dynamically allocating memory called \texttt{CudaMalloc}. However, dynamic memory allocation algorithms running on the CPU are often customized for certain programs that require the edge in speed or stability, such as video games, database engines and so on. It is only natural to suspect that Machine Learning algorithms would be able to deliver faster performances if an allocator tailored for their needs would be selected as well.
 
-We believe that \texttt{CudaMalloc}, as a general purpose dynamic memory allocation algorithm for the GPU, can be replaced for better performances when using the TensorFlow \cite{abadi2016} library for Machine Learning processing. In particular the \texttt{ResNet-50} implementation of TensorFlow will be evaluated, which is a Convolutional Neural Network (CNN) with many layers and will therefore allocate many small sized objects in the GPU memory \cite{DBLP:HeZRS15}.
+We believe that \texttt{CudaMalloc}, as a general purpose dynamic memory allocation algorithm for the GPU, can be replaced for better performances when using the TensorFlow \cite{abadi2016} library for Machine Learning processing. In particular the ResNet-50 implementation of TensorFlow will be evaluated, which is a Convolutional Neural Network (CNN) with many layers and will therefore allocate many small sized objects in the GPU memory \cite{DBLP:HeZRS15}.
 Algorithms that possibly perform better are mentioned in the work of \citeauthor{Vinkler2015} \cite{Vinkler2015}. They state that \texttt{CudaMalloc} is slower to process than other allocation algorithms for allocating many small sized objects, as shown in Figure 3a in \cite{Vinkler2015}. We decide to therefore select the better allocation algorithm for the task at hand, through the proposed research.
 
 \subsection{Problem}
@@ -262,7 +279,7 @@ Algorithms that possibly perform better are mentioned in the work of \citeauthor
 
 %Fast Machine Learning processing imposes specific constraints of the dynamic memory allocator that runs on the GPU, 
 
-The memory allocation pattern of TensorFlow's implementation of \texttt{ResNet-50} is not a great match for the memory allocator TensorFlow uses, we will investigate which previously published dynamic memory allocation algorithms perform better.
+The memory allocation pattern of TensorFlow's implementation of ResNet-50 is not a great match for the memory allocator TensorFlow uses, we will investigate which previously published dynamic memory allocation algorithms perform better.
 
 %The need for fast Machine Learning processing, by improving the dynamic memory allocation that runs on the GPU.
 
@@ -297,6 +314,10 @@ If we find a faster algorithm, send results and recommendation to the TensorFlow
 \label{sec:methods}
 
 %\todo{Describe and explain the research methods that will be used for the project. What research method (or methods) will be used? Argue: why this is the most appropriate method or methods. For example:}
+
+We decide to tackle allocation algorithms running on GPUs because machine learning takes advantage of their multiple core setup, threading capabilities and single-instruction multiple-data (SIMD) type of computation, achieving more than average performance than running on general purpose processors. TensorFlow already implements \texttt{CUDAMalloc} and \texttt{BFCMalloc} as its two selectable options for GPU method of allocation, with the latter being the default. In our initial comparison, \texttt{CUDAMalloc} achieves ${\sim}\resnettimecuda$ images/second performance when running the ResNet-50 benchmark, while BFCMalloc attains ${\sim}\resnettimebfc$ images/second, showing that, in fact, dynamic memory allocation algorithms can have an impact on the overall performance of machine learning software.
+
+Our main metric for comparison is, indeed, the speed of the construction of the ResNet-50 model that the benchmark can attain, expressed in \textit{images/second}. It is the main output that the benchmark shows while executing. Additionally, we study the object sizes being allocated throughout the runtime of the benchmark, in order to discuss why some allocators can perform better or worse for certain object sizes are requested for allocation. Furthermore, we consider of interest to change the model sizes wanted to be constructed by the benchmark, as some allocators can prove to be better with memory management than with other factors, successfully obtaining bigger models than its counterparts -- which could interrupt inadvertently when required to construct bigger models.\todo[inline]{We could also try other models}
 
 - Argue that memory map is quite unuseful
 
@@ -336,11 +357,11 @@ Replication information:
 \label{tab:results}
 \begin{tabular}{|l|l|l|l|}
 \hline
-Model     & Batch size & Allocator & Images/sec \\ \hline
-ResNet-50 & 16         & BFCMalloc & 5.29       \\ \cline{3-4} 
-          &            & CuMalloc  & 4.78       \\ \hline
-AlexNet   & 32         & BFCMalloc & 39.89      \\ \cline{3-4} 
-          &            & CuMalloc  & 38.58      \\ \hline
+Model     & Batch size & Allocator & Images/sec         \\ \hline
+ResNet-50 & 16         & BFCMalloc & \resnettimebfc     \\ \cline{3-4} 
+          &            & CuMalloc  & \resnettimecuda    \\ \hline
+AlexNet   & 32         & BFCMalloc & \alexnettimebfc    \\ \cline{3-4} 
+          &            & CuMalloc  & \alexnettimecuda   \\ \hline
 \end{tabular}
 \end{table}
 
