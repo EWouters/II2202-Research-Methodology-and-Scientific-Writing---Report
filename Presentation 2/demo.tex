@@ -17,6 +17,9 @@
 \usepackage{xspace}
 \newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
 
+\usepackage[backend=biber]{biblatex}
+\bibliography{../Final Report/II2202-report.bib}
+
 % \definecolor{white}{RGB}{255, 255, 255}
 % \definecolor{black}{RGB}{0, 0, 0}
 % \definecolor{softgray}{RGB}{240,240,240}
@@ -41,9 +44,16 @@
 % \setbeamercolor{block title}{fg=white,bg=blue}
 % \setbeamercolor{block body}{fg=white,bg=green!40!black}
 
+
+\newcommand{\resnettimebfc}{5.29}
+\newcommand{\resnettimecuda}{6.29}
+\newcommand{\alexnettimebfc}{7.29}
+\newcommand{\alexnettimecuda}{8.29}
+
+
 % Pages
     \setbeamertemplate{footline}{%
-       \raisebox{10pt}{\makebox[\paperwidth]{\hfill\makebox[30pt]{\scriptsize\insertframenumber*\ / \inserttotalframenumber*}}}}
+       \raisebox{10pt}{\makebox[\paperwidth]{\hfill\makebox[30pt]{\scriptsize\insertframenumber\ / \inserttotalframenumber}}}}
 
 \title{GPU Dynamic memory allocation algorithms for Machine Learning: A survey}
 \author{Erik H. Wouters, Dragoș Ș. Perju \quad \texttt{ehwo} | \texttt{dsperju}  \texttt{@kth.se}}
@@ -55,6 +65,19 @@
 \begin{document}
 
 \maketitle
+
+% Suggested slides (do not forget to number your slides):
+
+%     Title slide: Project title[:subtitle], Name of student(s) who conducted the project, Date of the oral presentation (1 slide)
+%     Problem statement, Why the problem is important to solve, and your Goals, problem context, [hypothesis], delimitations, ... (1 slide)
+%     Background and Related work (b slides)
+%     Method used to solve the problem (m slides)
+%     Results and Analysis (r slides)
+%     Conclusion (1 slide)
+%     Future work (1 slide)
+%     [Final slide - to solicit questions (1 slide)]
+
+% I would suggest b ≤ 2, m ≤ 2, r ≤ 2, in any case b+m+r ≤ 6.
 
 % \begin{frame}{Table of contents}
 %   \setbeamertemplate{section in toc}[sections numbered]
@@ -82,6 +105,7 @@
 \end{exampleblock}
 \end{frame}
 
+%     Background and Related work (b slides)
 \begin{frame}[fragile]{The problem}
 
 \metroset{block=fill}
@@ -112,7 +136,7 @@
 \metroset{block=fill}
 
 \begin{exampleblock}{More specifically}
-We extracted some GPU memory allocators' implementations from the source code of:
+We extracted some GPU memory allocator implementations from the source code of:
 
 \textit{M. Vinkler and V. Havran, “Register efficient dynamic memory allocator for GPUs” , Computer Graphics Forum, vol. 34, no. 8, pp. 143–154, 2015. [Online].} Available: \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/cgf.12666}
 
@@ -158,7 +182,7 @@ Benchmark such algorithms using a Machine Learning workload (TensorFlow CNN benc
 \metroset{block=fill}
 
 \begin{alertblock}{Hypothesis}
-Our hypothesis is that one or more of the algorithms described by Vinkler and Havran perform better as a memory allocator for TensorFlow's implementation of ResNet-50 than the stock \texttt{BFCAllocator} or the standard \texttt{CudaMalloc} does, in terms of overall speed, fragmentation and stability.
+Our hypothesis is that one or more of the algorithms described by \citeauthor{Vinkler2015} perform better as a memory allocator for TensorFlow's implementation of ResNet-50 than the stock \texttt{BFCAllocator} or the standard \texttt{CudaMalloc} does, in terms of overall speed, fragmentation and stability.
 \end{alertblock}
 \end{frame}
 
@@ -172,6 +196,7 @@ Improving allocation for \textbf{machine learning} means better performance for 
 
 \end{frame}
 
+%     Method used to solve the problem (m slides)
 \begin{frame}[fragile]{Methodology}
 
 \metroset{block=fill}
@@ -186,102 +211,32 @@ Improving allocation for \textbf{machine learning} means better performance for 
 \end{alertblock}
 
 \begin{exampleblock}{TensorFlow CNN benchmark}
- \textbf{ResNet-50} - a deep learning convolutional neural network
+    \textbf{ResNet-50} - a deep learning convolutional neural network
 \end{exampleblock}
 
 \end{frame}
 
-{
-\begin{frame}{Gantt Chart}
+%     Results and Analysis (r slides)
+\begin{frame}[fragile]{Results and Analysis}
 
-\hspace{-1cm}
-\begin{ganttchart}[vgrid,today=7,x unit=0.80cm,
-            y unit title=0.7cm,
-            y unit chart=0.725cm,
-            bar label font=\footnotesize,
-            milestone label font=\footnotesize,
-            group label font=\footnotesize,
-            title label font=\footnotesize
-]{1}{11}
-    \gantttitle{2018}{11} \\
-    \gantttitle{Aug}{1}
-    \gantttitle{Sep}{4}
-    \gantttitle{Oct}{4}
-    \gantttitle{Nov}{2} \\
-    \gantttitle{W1}{1}
-    \gantttitle{W2}{1}
-    \gantttitle{W3}{1}
-    \gantttitle{W4}{1}
-    \gantttitle{W5}{1}
-    \gantttitle{W6}{1}
-    \gantttitle{W7}{1}
-    \gantttitle{W8}{1}
-    \gantttitle{W9}{1}
-    \gantttitle{W10}{1}
-    \gantttitle{W11}{1}
-    
-    \ganttgroup{Experiment}{2}{9} \ganttnewline
-    \ganttgroup{Report}{9}{11} \ganttnewline
-    \ganttbar{Tools setup}{3}{9} \ganttnewline
-    \ganttbar{Obtain data}{9}{11} \ganttnewline
-    \ganttbar{Literature study}{1}{8} \ganttnewline
-    \ganttbar{Write report}{9}{11} \ganttnewline
-    \ganttmilestone{Project plan 1}{2} \ganttnewline
-    \ganttmilestone{Project plan 2}{7} \ganttnewline
-    \ganttmilestone{First report}{10}
-    \ganttlink{elem5}{elem8} % Write report -> First report
-    \ganttlink{elem2}{elem3} % Tools setup -> Obtain data
-\end{ganttchart}
+\metroset{block=fill}
 
+\begin{exampleblock}{Initial Results}
+    \begin{table}[!ht]
+    \centering
+    % \caption{Initial Results}
+    \label{tab:results}
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+    Model     & Batch size & Allocator & Images/sec         \\ \hline
+    ResNet-50 & 16         & BFCMalloc & \resnettimebfc     \\ \cline{3-4} 
+              &            & CuMalloc  & \resnettimecuda    \\ \hline
+    AlexNet   & 32         & BFCMalloc & \alexnettimebfc    \\ \cline{3-4} 
+              &            & CuMalloc  & \alexnettimecuda   \\ \hline
+    \end{tabular}
+    \end{table}
+\end{exampleblock}
 
 \end{frame}
-}
-
-{
-\begin{frame}{Timeline \& Milestones}
-
-\hspace{-1cm}
-\begin{ganttchart}[vgrid,x unit=0.80cm,
-            y unit title=0.7cm,
-            y unit chart=0.725cm,
-            bar label font=\footnotesize,
-            milestone label font=\footnotesize,
-            group label font=\footnotesize,
-            title label font=\footnotesize
-]{1}{10}
-    \gantttitle{2018}{7}
-    \gantttitle{2019}{3} \\
-    \gantttitle{Nov}{3}
-    \gantttitle{Dec}{4}
-    \gantttitle{Jan}{3} \\
-    \gantttitle{W12}{1}
-    \gantttitle{W13}{1}
-    \gantttitle{W14}{1}
-    \gantttitle{W15}{1}
-    \gantttitle{W16}{1}
-    \gantttitle{W17}{1}
-     \gantttitle{Christmas}{2}
-    \gantttitle{W18}{1}
-    \gantttitle{W19}{1}
-    
-    \ganttgroup{Report}{1}{4} \ganttnewline
-    \ganttgroup{Opposition}{2}{6} \ganttnewline
-    \ganttbar{Write report}{1}{8} \ganttnewline
-    \ganttbar{Write opposition}{2}{4} \ganttnewline
-    \ganttmilestone{Opposition}{4} \ganttnewline
-    \ganttmilestone{Second report}{4} \ganttnewline
-    \ganttmilestone{Third report}{6} \ganttnewline
-    \ganttmilestone{Final report \& presentation}{9}
-    % Link buldge / Link mid tries not to overlap arrows with each other. It's like spacing for arrows.
-    \ganttlink[link bulge=0.7, link mid=0.3]{elem3}{elem4}
-    \ganttlink{elem2}{elem5}
-    \ganttlink{elem2}{elem6}
-    \ganttlink{elem2}{elem7}
-    \ganttlink{elem3}{elem7}
-\end{ganttchart}
-
-\end{frame}
-
-}
 
 \end{document}
