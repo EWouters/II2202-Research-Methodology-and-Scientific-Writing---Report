@@ -24,7 +24,7 @@
 
 \usepackage[paper=a4paper,dvips,top=1.5cm,left=1.5cm,right=1.5cm,
     foot=1cm,bottom=1.5cm]{geometry}
-\usepackage{todonotes}
+\usepackage[disable]{todonotes}
 
 %\usepackage[T1]{fontenc}
 %%\usepackage{pslatex}
@@ -37,6 +37,8 @@
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
+
+\usepackage{nameref}
 
 %%----------------------------------------------------------------------------
 %%   pcap2tex stuff
@@ -138,10 +140,12 @@
 \setcounter{tocdepth}{3}	%% 3 depth levels in TOC
 \setcounter{secnumdepth}{5}
 
-\newcommand{\resnettimebfc}{5.29}
-\newcommand{\resnettimecuda}{6.29}
-\newcommand{\alexnettimebfc}{7.29}
-\newcommand{\alexnettimecuda}{8.29}
+\newcommand{\resnettimebfc}{$5.82$}
+\newcommand{\resnettimecuda}{$5.32$}
+\newcommand{\resnettimehalloc}{$?$}
+\newcommand{\alexnettimebfc}{$41.71$}
+\newcommand{\alexnettimecuda}{$40.24$}
+\newcommand{\alexnettimehalloc}{$?$}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% End of preamble
@@ -194,12 +198,12 @@ This document requires readers to be familiar with terms and concepts described 
 \clearpage
 
 
-\todo[inline]{Change \textbackslash usepackage\{todonotes\}\ to\ \textbackslash usepackage[disabled]\{todonotes\} to hide the todo notes}
+\todo[inline]{Change \textbackslash usepackage\{todonotes\}\ to\ \textbackslash usepackage[disable]\{todonotes\} to hide the todo notes}
 
 \todo[inline]{as we'll probably not finish them all by Friday.}
 
 \section{Introduction}
-\label{sect:introduction}
+\label{sec:introduction}
 %% Longer problem statement
 %% General introduction to the area
 
@@ -217,20 +221,14 @@ Machine learning represents a major and computationally intensive computing tech
 
 In the present research paper, we offer a comparison of the performance of several dynamic memory allocation algorithms running on the GPU, executed by a benchmark of the well-known machine learning (ML) software library TensorFlow. The benchmark constructs Convolutional Neural Networks (CNN) of different models: ResNet-50, AlexNet.
 
-We select different dynamic memory allocation algorithms capable to run on the GPU and study:
-\begin{itemize}
-\item the speed (measured in \textit{images/second});
-\item adjust the size of the models to see how they manage memory;
-\item blabla
-\end{itemize}
+Different dynamic memory allocation algorithms capable to run on the GPU are selected and studied based on different factors (such as \textit{speed}, \textit{memory management} and \textit{object sizes} requested for allocation). The algorithms chosen are: \texttt{CUDAMalloc} (or \texttt{cuMalloc}), \texttt{BFCMalloc} and \texttt{Halloc}.
 
-\todo[inline]{Better put ref's here to the sections}
-We describe TensorFlow,\todo[inline]{, the benchmark, ResNet-50, other models} the possible issues with dynamic memory allocation and the allocators being studied under the next, second section, \textit{Theoretical framework}. In the third section, \textit{Research questions, hypotheses}, it is laid out exactly what the questions that this paper attempts to answer are and what the theoretical expectations are for which allocators would be best suited, studying mostly their design descriptions done in section two. Section four, \textit{Method(s)}, includes the system configuration and the methods used to obtain the results and graphs under section five, \textit{results and analysis}, as well as the reasoning behind using some methods rather than others. Finally, under the \textit{Discussion} section, we draw a conclusion for what allocators are the best in which cases.
+Descriptions of TensorFlow, the benchmark, the CNN models that are studied, the dynamic memory allocation algorithms and possible issues with dynamic memory allocation in general are under the sub-section \textit{\nameref{sec:theoretical-framework}} of this \textit{\nameref{sec:introduction}} section. In section \ref{sec:questions}, \textit{\nameref{sec:questions}}, it is laid out the conclusions we want to make and our expectations of the results, before running the benchmark. Most algorithms come accompanied with their own descriptions that offer an idea in which situations such algorithms would behave better than in other situations. Section \ref{sec:methods}, \textit{\nameref{sec:methods}}, includes the system configuration on which the the tests were executed, as well as the description of the test paradigm this study entails. \textit{Results and analysis} includes the final graphs and tables with data after an extensive run of our tests. Here, we also discuss the different aspects that such results entail: there's no one allocator that satisfies all supposed requirements. Finally, under the \textit{Discussion} section, we draw a conclusion for what allocators are the best in which cases.
 
 
 
 
-\subsection{Theoretical framework & Literature study}
+\subsection{Theoretical framework}
 \label{sec:theoretical-framework}
 
 \subsubsection*{TensorFlow}
@@ -257,8 +255,8 @@ Literature:
 
 %Different programming languages offer different ways of managing variables. Most of them use a dynamic memory allocation algorithm. This algorithm returns a memory address when request to create a new variable is executed. In higher level programming languages there is no direct interaction with the memory addresses, but in lower level languages programmers can employ advanced techniques to manage the memory more efficiently for a specific application \cite{TRAISTER199099}.
 
-\subsection{Research questions, hypotheses}
-\label{sect:questions}
+\subsection{Research questions}
+\label{sec:questions}
 
 \subsusection{Problem Statement}
 \label{sec:problem-statement}
@@ -310,10 +308,19 @@ Machine Learning is a technology that helps with the advancement on many problem
 If we find a faster algorithm, send results and recommendation to the TensorFlow team for study and possible implementation in the release version.
 
 
-\section{Method(s)}
+\section{Methods}
 \label{sec:methods}
 
 %\todo{Describe and explain the research methods that will be used for the project. What research method (or methods) will be used? Argue: why this is the most appropriate method or methods. For example:}
+
+\begin{itemize}
+\vspace{-10px}
+\itemsep-0.25em 
+\item the speed (measured in \textit{images/second});
+\item the reliability of the allocators as the size of the model is raised (does the allocator not have enough memory at some point, due to poor memory management?);
+\item the frequency in size of the objects requested to be allocated, as some allocators may prove to run better if most allocated objects are smaller or bigger.
+\vspace{-10px}
+\end{itemize}
 
 We decide to tackle allocation algorithms running on GPUs because machine learning takes advantage of their multiple core setup, threading capabilities and single-instruction multiple-data (SIMD) type of computation, achieving more than average performance than running on general purpose processors. TensorFlow already implements \texttt{CUDAMalloc} and \texttt{BFCMalloc} as its two selectable options for GPU method of allocation, with the latter being the default. In our initial comparison, \texttt{CUDAMalloc} achieves ${\sim}\resnettimecuda$ images/second performance when running the ResNet-50 benchmark, while BFCMalloc attains ${\sim}\resnettimebfc$ images/second, showing that, in fact, dynamic memory allocation algorithms can have an impact on the overall performance of machine learning software.
 
@@ -351,17 +358,21 @@ Replication information:
 \section{Results and Analysis}
 \label{sec:results-and-analysis}
 
+The initial benchmarks are shown in table \ref{tab:results}. The images/sec column shows the average amount of images that are processed per second for the different models and allocators. The tests have been repeated five times and averaged over the runs.
+
 \begin{table}[!ht]
 \centering
 \caption{Initial Results}
 \label{tab:results}
 \begin{tabular}{|l|l|l|l|}
 \hline
-Model     & Batch size & Allocator & Images/sec         \\ \hline
-ResNet-50 & 16         & BFCMalloc & \resnettimebfc     \\ \cline{3-4} 
-          &            & CuMalloc  & \resnettimecuda    \\ \hline
-AlexNet   & 32         & BFCMalloc & \alexnettimebfc    \\ \cline{3-4} 
-          &            & CuMalloc  & \alexnettimecuda   \\ \hline
+Model     & Batch size  & Allocator          & Images/sec         \\ \hline
+ResNet-50 & $16$        & \texttt{BFCMalloc} & \resnettimebfc     \\ \cline{3-4} 
+          &             & \texttt{CuMalloc}  & \resnettimecuda    \\ \cline{3-4} 
+          &             & \texttt{Halloc}    & \resnettimehalloc  \\ \hline
+AlexNet   & $32$        & \texttt{BFCMalloc} & \alexnettimebfc    \\ \cline{3-4} 
+          &             & \texttt{CuMalloc}  & \alexnettimecuda   \\ \cline{3-4} 
+          &             & \texttt{Halloc}    & \alexnettimehalloc \\ \hline
 \end{tabular}
 \end{table}
 
