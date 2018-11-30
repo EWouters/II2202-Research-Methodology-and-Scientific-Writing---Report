@@ -128,3 +128,11 @@ author = "Robert J. Traister",
 abstract = "Publisher Summary
 This chapter discusses memory allocation functions in relation to pointers. When a pointer is assigned the memory address of an allocated block of memory, then the pointer has been initialized and is sized to the number of bytes in the storage area. It is then safe to copy objects to this memory block using the pointer for access. The pointer is treated as an array of the same size as the memory block the pointer addresses. Both of the standard C language memory allocation functions will return a NULL character if the amount of memory requested cannot be allocated. Any program that uses either of these functions must test their returns for the NULL. In the Turbo C compiler and most other modern-day equivalents, malloc()and calloc() return pointers of type void. This means that the return address value can assume any legal pointer data type. Through the use of C language pointers and the memory allocation functions, it is convenient to do block reads and block writes."
 }
+
+@INPROCEEDINGS{dlmalloc,
+    author = {A. M. Cheadle and A. J. Field and J. W. Ayres and N. Dunn and R. A. Hayden and J. Nystrom-persson},
+    title = {Visualising dynamic memory allocators},
+    booktitle = {In Proceedings of the 5th international symposium on Memory management, ISMM ’06},
+    year = {2006},
+    pages = {115--125}
+}

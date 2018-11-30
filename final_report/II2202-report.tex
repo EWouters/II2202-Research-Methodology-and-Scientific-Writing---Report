@@ -160,9 +160,9 @@
 \begin{abstract}
 \label{sec:abstract}
 
-We compare 4 dynamic memory allocators designed for running on GPUs and select the best performing under TensorFlow’s Convolutional Neural Network (CNN) benchmark, running only the ResNet50 model. Our main metric of comparison is the number of images per second processed by the benchmark. Other metrics studied are: object sizes requested for allocation by the benchmark and the frequency in allocation request and in the sizes used. After our performance analysis, we conclude that \texttt{Halloc} algorithm is better than the already used algorithms by Tensorflow, \texttt{CUDAMalloc} and \texttt{BFCMalloc}, in the context of the benchmark itself.\footnote{Not proven yet. Might possibly also be false.}.
+We compare 4 dynamic memory allocators designed for running on GPUs and select the best performing under TensorFlow’s Convolutional Neural Network (CNN) benchmark, running only the ResNet50 model. Our main metric of comparison is the number of images per second processed by the benchmark. Other metrics studied are: object sizes requested for allocation by the benchmark and the frequency in allocation request and in the sizes used. After our performance analysis, we conclude that \texttt{Halloc} algorithm is better than the already used algorithms by TensorFlow, \texttt{CUDAMalloc} and \texttt{BFCMalloc}, in the context of the benchmark itself.\footnote{Not proven yet. Might possibly also be false.}.
 
-\textbf{Keywords:} Algorithm, Performance, Machine learning, GPU, Dynamic memory, Allocation, Tensorflow
+\textbf{Keywords:} Algorithm, Performance, Machine learning, GPU, Dynamic memory, Allocation, TensorFlow
 
 \end{abstract}
 %%\clearpage
@@ -179,6 +179,9 @@ This document requires readers to be familiar with terms and concepts described 
 \item[CNN]					Convolutional Neural Network \cite{postel_internet_1981})
 \item[CPU]                  Central Processing Unit
 \item[GPU]                  Graphics Processing Unit
+\item[ML]                   Machine Learning
+\item[SIMD]                 Single-Instruction Multiple-Data
+\item[CUDA]                 Compute Unified Device Architecture
 \end{basedescript}
 
 
@@ -203,12 +206,12 @@ This document requires readers to be familiar with terms and concepts described 
 
 Machine learning represents a major and computationally intensive computing technique that is one of the most important drivers of progress, in the context of humankind and of the technology we use today. Many examples of real-life scenarios show how machine learning directly impacts people's day-to-day lives, such as in the application domains of: smart farming\todo[inline]{[1 TODO]}, city vehicle traffic\todo[inline]{[2 TODO]}, video surveillance and so on. It is therefore important to improve such complex computer techniques, by improving the basic computer algorithms on which these advanced techniques are based upon. One such basic technique is dynamic memory allocation.
 
-In the present research paper, we aim to compare the performance of several dynamic memory allocation algorithms running on the graphics processing unit (GPU), by interchanging with the ones that are already implemented in the well-known machine learning (ML) software library TensorFlow. We decide to tackle allocation algorithms running on GPUs because machine learning takes advantage of their core structure, threading capabilities and single-instruction multiple-data (SIMD) type of computation, achieving only average performance when running on general purpose processors. TensorFlow already implements \texttt{CUDAMalloc} and \texttt{BFCMalloc} as its two selectable options for GPU allocation, with the latter being the default. In our initial comparison, \texttt{CUDAMalloc} achieves ${\sim}5$ images/second performance when running the ResNet50 benchmark, while \texttt{BFCMalloc} attains ${\sim}8.3$ images/second, showing that, in fact, dynamic memory allocation algorithms can have a big impact on the overall performance of machine learning software.
+In the present research paper, we aim to compare the performance of several dynamic memory allocation algorithms running on the graphics processing unit (GPU), by interchanging with the ones that are already implemented in the well-known machine learning (ML) software library TensorFlow. We decide to tackle allocation algorithms running on GPUs because machine learning takes advantage of their core structure, threading capabilities and single-instruction multiple-data (SIMD) type of computation, achieving only average performance when running on general purpose processors. TensorFlow already implements \texttt{CUDAMalloc} and \texttt{BFCMalloc} as its two selectable options for GPU allocation, with the latter being the default. In our initial comparison, \texttt{CUDAMalloc} achieves ${\sim}5$ images/second performance when running the ResNet50 benchmark, while \texttt{BFCMalloc} attains ${\sim}8.3$ \texttt{images/second}, showing that, in fact, dynamic memory allocation algorithms can have a big impact on the overall performance of machine learning software.
 
-Our main metric for comparison is, indeed, the speed of the construction of the ResNet50 model that the benchmark can attain, expressed in \textit{images/second}. It is the main output that the benchmark shows while executing. Additionally, we study the object sizes being allocated throughout the runtime of the benchmark, in order to discuss why some allocators can perform better or worse for certain object sizes being requested for allocation. Furthermore, we consider of interest to change the model sizes wanted to be constructed by the benchmark, as some allocators can prove to be better with memory management than with other factors, successfully obtaining bigger models than its counterparts -- which could interrupt inadvertently when required to construct bigger models.\todo[inline]{We could also try other models}
+Our main metric for comparison is, indeed, the speed of the construction of the \texttt{ResNet50} model that the benchmark can attain, expressed in \textit{images/second}. It is the main output that the benchmark shows while executing. Additionally, we study the object sizes being allocated throughout the runtime of the benchmark, in order to discuss why some allocators can perform better or worse for certain object sizes are requested for allocation. Furthermore, we consider of interest to change the model sizes wanted to be constructed by the benchmark, as some allocators can prove to be better with memory management than with other factors, successfully obtaining bigger models than its counterparts -- which could interrupt inadvertently when required to construct bigger models.\todo[inline]{We could also try other models}
 
 \todo[inline]{Better put ref's here to the sections}
-We describe Tensorflow,\todo[inline]{, the benchmark, ResNet50, other models} the possible issues with dynamic memory allocation and the allocators being studied under the next, second section, \textit{Theoretical framework}. In the third section, \textit{Research questions, hypotheses}, it is laid out exactly what are the questions that this paper attempts to answer and what are the theoretical expectations for which allocators would be the best, studying mostly their design descriptions done in section two. Section four, \textit{Method(s)}, includes the system configuration and the methods used to obtain the results and graphs under section five, \textit{results and analysis}, as well as the reasoning behind using some methods rather than others. Finally, under the \textit{Discussion} section, we draw a conclusion for what allocators are the best in which cases.
+We describe TensorFlow,\todo[inline]{, the benchmark, ResNet50, other models} the possible issues with dynamic memory allocation and the allocators being studied under the next, second section, \textit{Theoretical framework}. In the third section, \textit{Research questions, hypotheses}, it is laid out exactly what the questions that this paper attempts to answer are and what the theoretical expectations are for which allocators would be best suited, studying mostly their design descriptions done in section two. Section four, \textit{Method(s)}, includes the system configuration and the methods used to obtain the results and graphs under section five, \textit{results and analysis}, as well as the reasoning behind using some methods rather than others. Finally, under the \textit{Discussion} section, we draw a conclusion for what allocators are the best in which cases.
 
 
 
@@ -216,15 +219,16 @@ We describe Tensorflow,\todo[inline]{, the benchmark, ResNet50, other models} th
 \section{Theoretical framework/literature study}
 \label{sec:theoretical-framework}
 
-\subsubsection*{Tensorflow}
+\subsubsection*{TensorFlow}
 
-Tensorflow is an open-source software library that can perform numerical computation using data flow graphs. It can therefore perform machine learning in a faster and easier manner, being one of its main application purposes. Tensorflow was developed and used in-house by a research team at Google, being released afterwards to the public on November 2015 on GitHub. The very first public version of Tensorflow contains parts of another deep learning project named Caffe, developed at University of California, having a copyright notice alongside, dated 2014.
+TensorFlow is an open-source software library that can perform numerical computation using data flow graphs. It can therefore perform machine learning in a faster and easier manner, being one of its main application purposes. TensorFlow was developed and used in-house by a research team at Google, being released afterwards to the public on November 2015 on GitHub. The very first public version of TensorFlow contains parts of another deep learning project named Caffe, developed at University of California, having a copyright notice alongside, dated 2014.
 
-Yet, ever since Tensorflow was developed, its main dynamic memory allocation algorithm for GPU use is the BFCAllocator. In its own source code, BFCAllocator is described to be: "a memory allocator that implements a 'best-fit with coalescing' algorithm.  [...] [It] is essentially a very simple version of Doug Lea's malloc (dlmalloc)."
+Yet, ever since TensorFlow was developed, its main dynamic memory allocation algorithm for GPU use is the BFCAllocator. In its own source code, BFCAllocator is described to be: "a memory allocator that implements a 'best-fit with coalescing' algorithm.  [...] [It] is essentially a very simple version of Doug Lea's malloc (dlmalloc) \cite{dlmalloc}."
 
-CUDA's own dynamic memory allocator, cuMalloc, is kept as an alternative, easily selectable before running TensorFlow. It is however composed of proprietary code and does not share anything else but the header file that allows it to be used. % As such, we cannot say what type of allocator cuMalloc is -- as different allocator algorithms can be categorized in different types.
+CUDA's own dynamic memory allocator, \texttt{cuMalloc}, is kept as an alternative, easily selectable before running TensorFlow. It is however composed of proprietary code and does not share anything else but the header file that allows it to be used. As such, we cannot investigate the code to see what type of allocator this is. However \citeauthor{Vinkler2015} states that \texttt{cuMalloc} is relatively slow for small memory allocations.
+% As such, we cannot say what type of allocator \texttt{cuMalloc} is -- as different allocator algorithms can be categorized in different types.
 
-In our initial comparisons, we have found Tensorflow's default allocator, BFCAllocator, to attain ~8 images per second when processing the ResNet50 model benchmark, while cuAlloc attains only ~5.3 images per second. This proves that there is significance in such a research, as choosing the right dynamic memory allocator can have a large impact on the performance of high end algorithms and computing techniques.
+In our initial comparisons, we have found TensorFlow's default allocator, BFCAllocator, to attain ~8 images per second when processing the ResNet50 model benchmark, while \texttt{cuMalloc} attains only ~5.3 images per second. This proves that there is significance in such a research, as choosing the right dynamic memory allocator can have a large impact on the performance of high end algorithms and computing techniques.
 
 \subsubsection*{Dynamic memory allocation}
 
@@ -234,7 +238,7 @@ Such problems make dynamic memory allocation algorithms unsuitable for use on sp
 
 Literature:
 \url{https://devtalk.nvidia.com/default/topic/878664/custom-memory-allocator-for-cuda-desired/}
-\url{https://riptutorial.com/tensorflow/example/13427/use-the-tcmalloc-allocator}
+\url{https://riptutorial.com/TensorFlow/example/13427/use-the-tcmalloc-allocator}
 \url{http://on-demand.gputechconf.com/gtc/2014/presentations/S4271-halloc-high-throughput-dynamic-memory-allocator.pdf}
 
 %Different programming languages offer different ways of managing variables. Most of them use a dynamic memory allocation algorithm. This algorithm returns a memory address when request to create a new variable is executed. In higher level programming languages there is no direct interaction with the memory addresses, but in lower level languages programmers can employ advanced techniques to manage the memory more efficiently for a specific application \cite{TRAISTER199099}.
@@ -306,7 +310,7 @@ Focusing on such a metric means we maintain the
 - Also, we deem of interest to try out different model sizes, in order to see not only the speed of certain allocation algorithms, but how well they manage the memory throughout the benchmark run, possibly running slower in general but are able to construct a bigger model fully than its counterparts, which can interrupt unwantingly mid-way.
 
 
-We will compile TensorFlow on Erik Wouters' HP ZBook workstation laptop (equipped with an NVIDIA K1100M GPU) and run the TensorFlow Convolutional Neural Network benchmarks from \url{https://github.com/tensorflow/benchmarks}. To compare the different memory algorithms, we will repeat the compilation and benchmarking with a subset of the memory allocation algorithms described by \citeauthor{Vinkler2015} \cite{Vinkler2015}.
+We will compile TensorFlow on Erik Wouters' HP ZBook workstation laptop (equipped with an NVIDIA K1100M GPU) and run the TensorFlow Convolutional Neural Network benchmarks from \url{https://github.com/TensorFlow/benchmarks}. To compare the different memory algorithms, we will repeat the compilation and benchmarking with a subset of the memory allocation algorithms described by \citeauthor{Vinkler2015} \cite{Vinkler2015}.
 
 The project will use the empirical method \cite{bock2001}. As we are evaluating using a well known benchmark from the Machine Learning field, this will provide results that mimic real world performance of these algorithms applied to Machine Learning \cite{abadi2016}. In order to create results that are as repeatable as possible, each test will be run 5 times and then the times will be averaged together. The NVIDIA K1100M GPU will run in it's default state on Erik Wouters' HP ZBook. For each test, 10 warm-up steps will be done and then the next 100 steps will be averaged. 
 
