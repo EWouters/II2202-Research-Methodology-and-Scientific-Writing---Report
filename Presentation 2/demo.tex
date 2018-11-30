@@ -17,7 +17,11 @@
 \usepackage{xspace}
 \newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
 
+% \usepackage[romanian]{babel}
+% \usepackage{fontspec}
+
 \usepackage[backend=biber]{biblatex}
+% \usepackage[numbers]{natbib}
 \bibliography{../Final Report/II2202-report.bib}
 
 % \definecolor{white}{RGB}{255, 255, 255}
@@ -45,19 +49,21 @@
 % \setbeamercolor{block body}{fg=white,bg=green!40!black}
 
 
-\newcommand{\resnettimebfc}{$5.82$}
-\newcommand{\resnettimecuda}{$5.32$}
-\newcommand{\resnettimehalloc}{$?$}
-\newcommand{\alexnettimebfc}{$41.71$}
-\newcommand{\alexnettimecuda}{$40.24$}
-\newcommand{\alexnettimehalloc}{$?$}
+%\usepackage{grffile} % To remove filename from pdf figure
+
+\newcommand{\resnettimebfc}{$5.79$}     % ( 5.82 +  5.82 +  5.66 +  5.82 +  5.81)/5
+\newcommand{\resnettimecuda}{$5.29$}    % ( 5.26 +  5.29 +  5.27 +  5.31 +  5.32)/5     9.5% slower
+\newcommand{\resnettimehalloc}{$?$}     %
+\newcommand{\alexnettimebfc}{$41.62$}   % (41.61 + 41.66 + 41.60 + 41.61 + 41.61)/5
+\newcommand{\alexnettimecuda}{$40.19$}  % (40.17 + 40.26 + 40.26 + 40.06 + 40.20)/5     3.6% slower
+\newcommand{\alexnettimehalloc}{$?$}    %
 
 % Pages
     \setbeamertemplate{footline}{%
        \raisebox{10pt}{\makebox[\paperwidth]{\hfill\makebox[30pt]{\scriptsize\insertframenumber\ / \inserttotalframenumber}}}}
 
 \title{GPU Dynamic memory allocation algorithms for Machine Learning: A survey}
-\author{Erik H. Wouters, Dragoș Ș. Perju \quad \texttt{ehwo} | \texttt{dsperju}  \texttt{@kth.se}}
+\author{Erik H. Wouters, Dragoş Ş. Perju \{\texttt{ehwo}$\mid$\texttt{dsperju}\}\texttt{@kth.se}}
 \date{November 30, 2018}
 
 \institute{KTH Royal University of Technology \quad Stockholm, Sweden}
@@ -87,7 +93,7 @@
 
 %\section{Introduction}
 
-\begin{frame}[fragile]{The problem}
+\begin{frame}[fragile]{Problem}
 
 \metroset{block=fill}
 
@@ -106,8 +112,17 @@
 \end{exampleblock}
 \end{frame}
 
-%     Background and Related work (b slides)
-\begin{frame}[fragile]{The problem}
+% \begin{frame}[fragile]{The problem}
+
+% \metroset{block=fill}
+
+% \begin{alertblock}{Problem statement}
+% % We believe that \textbf{machine learning} applications can benefit from using a scientifically chosen dynamic memory allocator, in order to have an improved performance.
+%  We want to choose the best dynamic memory allocator when used with \textbf{TensorFlow}'s benchmark implementation of \textbf{ResNet-50}, in terms of overall speed, fragmentation and other metrics.
+% \end{alertblock}
+% \end{frame}
+
+\begin{frame}[fragile]{Problem}
 
 \metroset{block=fill}
 
@@ -115,29 +130,24 @@
 % We believe that \textbf{machine learning} applications can benefit from using a scientifically chosen dynamic memory allocator, in order to have an improved performance.
  We want to choose the best dynamic memory allocator when used with \textbf{TensorFlow}'s benchmark implementation of \textbf{ResNet-50}, in terms of overall speed, fragmentation and other metrics.
 \end{alertblock}
-\end{frame}
 
-\begin{frame}[fragile]{The problem}
-
-\metroset{block=fill}
-
-\begin{alertblock}{Problem statement}
-% We believe that \textbf{machine learning} applications can benefit from using a scientifically chosen dynamic memory allocator, in order to have an improved performance.
- We want to choose the best dynamic memory allocator when used with \textbf{TensorFlow}'s benchmark implementation of \textbf{ResNet-50}, in terms of overall speed, fragmentation and other metrics.
-\end{alertblock}
-
-\begin{exampleblock}{More specifically}
- The memory allocation pattern of \textbf{TensorFlow}'s implementation of \textbf{ResNet-50} is not a great match for the memory allocator TensorFlow uses, we will investigate which previously published dynamic memory allocation algorithms perform better.
+\begin{exampleblock}{Hypothesis}
+Our hypothesis is that one or more of the algorithms described by \citeauthor{Vinkler2015} perform better as a memory allocator for TensorFlow's implementation of \textbf{ResNet-50} than the stock \texttt{BFCAllocator} or the standard \texttt{CudaMalloc} does, in terms of overall speed, fragmentation and stability.
 \end{exampleblock}
 
+% \begin{exampleblock}{More specifically}
+%  The memory allocation pattern of \textbf{TensorFlow}'s implementation of \textbf{ResNet-50} is not a great match for the memory allocator TensorFlow uses, we will investigate which previously published dynamic memory allocation algorithms perform better.
+% \end{exampleblock}
+
 \end{frame}
 
-\begin{frame}[fragile]{The problem}
+%     Background and Related work (b slides)
+\begin{frame}[fragile]{Background}
 
 \metroset{block=fill}
 
-\begin{exampleblock}{More specifically}
-We extracted some GPU memory allocator implementations from the source code of:
+\begin{exampleblock}{Related work}
+We extracted GPU memory allocator implementations from the source code of:
 
 \textit{M. Vinkler and V. Havran, “Register efficient dynamic memory allocator for GPUs” , Computer Graphics Forum, vol. 34, no. 8, pp. 143–154, 2015. [Online].} Available: \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/cgf.12666}
 
@@ -145,12 +155,31 @@ TensorFlow uses NVIDIA CUDA as a GPU library, and \texttt{BFCAllocator} or \text
 \end{exampleblock}
 \end{frame}
 
-\begin{frame}[fragile]{BFCAllocator}
- \begin{figure}
- \includegraphics[scale=0.4]{images/BFCAllocator.png}
- \caption{Exerpt from TensorFlow's source code, showing \texttt{BFCAllocator}}
- \end{figure}
+%     Method used to solve the problem (m slides)
+\begin{frame}[fragile]{Background}
+
+\metroset{block=fill}
+
+\begin{alertblock}{GPU Dynamic memory allocation algorithms}
+ \begin{itemize}
+     \item \textbf{BFCMalloc} - best-fit with coalescing;
+     \item \textbf{CudaMalloc} - proprietary algorithm of NVIDIA;
+     \item \textbf{Halloc} - hashing function to reduce the cost of small memory allocations.
+ \end{itemize}
+\end{alertblock}
+
+\begin{exampleblock}{TensorFlow CNN benchmark}
+    \textbf{ResNet-50} - a deep learning convolutional neural network
+\end{exampleblock}
+
 \end{frame}
+
+% \begin{frame}[fragile]{Background}
+%  \begin{figure}
+%  \includegraphics[scale=0.4]{images/BFCAllocator.png}
+%  \caption{Exerpt from TensorFlow's source code, showing \texttt{BFCAllocator}}
+%  \end{figure}
+% \end{frame}
 
 %\begin{frame}[fragile]{The problem}
 %
@@ -162,60 +191,33 @@ TensorFlow uses NVIDIA CUDA as a GPU library, and \texttt{BFCAllocator} or \text
 %
 %\end{frame}
 
-\begin{frame}[fragile]{Goals}
+\begin{frame}[fragile]{Methodology}
 
 \metroset{block=fill}
 
-\begin{alertblock}{Goals}
+\begin{alertblock}{Methodology}
 %Test different GPU dynamic memory allocation algorithms                           (such as: CudaMalloc and others);
-Benchmark such algorithms using a Machine Learning workload (TensorFlow CNN benchmarks).
+% Benchmark such algorithms using a Machine Learning workload (TensorFlow CNN benchmarks).
 \begin{enumerate}
-    \item Design a repeatable experiment that evaluates the performance of different GPU memory allocation algorithms for the ResNet-50 benchmark. This experiment will be used to validate the hypothesis. 
-    \item Understand why these algorithms are faster (or slower).
-    \item If we find a faster algorithm, send results and recommendation to the TensorFlow team for study and possible implementation in the release version.
+    \item Analyze memory allocation pattern of \texttt{ResNet-50}
+    \item Match pattern to memory allocator suggested by literature (\texttt{Halloc})
+    \item Add \texttt{Halloc} allocator to TensorFlow source code
+    \item Used standard benchmarks from TensorFlow to evaluate the performance compared to the built-in memory allocators
+    \item Analyze performance of allocator for a larger variety of models
 \end{enumerate}
 
 \end{alertblock}
 \end{frame}
 
-\begin{frame}[fragile]{Hypothesis}
+% \begin{frame}[fragile]{Problem importance}
 
-\metroset{block=fill}
+% \metroset{block=fill}
 
-\begin{alertblock}{Hypothesis}
-Our hypothesis is that one or more of the algorithms described by \citeauthor{Vinkler2015} perform better as a memory allocator for TensorFlow's implementation of ResNet-50 than the stock \texttt{BFCAllocator} or the standard \texttt{CudaMalloc} does, in terms of overall speed, fragmentation and stability.
-\end{alertblock}
-\end{frame}
+% \begin{exampleblock}{Why is the problem is important to solve}
+% Improving allocation for \textbf{machine learning} means better performance for the same amount of time and the same amount of energy. 
+% \end{exampleblock}
 
-\begin{frame}[fragile]{Problem importance}
-
-\metroset{block=fill}
-
-\begin{exampleblock}{Why is the problem is important to solve}
-Improving allocation for \textbf{machine learning} means better performance for the same amount of time and the same amount of energy. 
-\end{exampleblock}
-
-\end{frame}
-
-%     Method used to solve the problem (m slides)
-\begin{frame}[fragile]{Methodology}
-
-\metroset{block=fill}
-
-\begin{alertblock}{GPU Dynamic memory allocation algorithms}
- \begin{itemize}
-     \item \textbf{CudaMalloc} - proprietary algorithm of NVIDIA;
-     \item \textbf{CircularMalloc} - organizes the memory pool as a singly linked list;
-     \item \textbf{ScatterAlloc} - can efficiently deal with hundreds of requests in parallel;
-     \item \textbf{Halloc} - hashing function to reduce the cost of small memory allocations.
- \end{itemize}
-\end{alertblock}
-
-\begin{exampleblock}{TensorFlow CNN benchmark}
-    \textbf{ResNet-50} - a deep learning convolutional neural network
-\end{exampleblock}
-
-\end{frame}
+% \end{frame}
 
 %     Results and Analysis (r slides)
 \begin{frame}[fragile]{Results and Analysis}
@@ -223,13 +225,14 @@ Improving allocation for \textbf{machine learning} means better performance for 
 \metroset{block=fill}
 
 \begin{exampleblock}{Initial Results}
+
     \begin{table}[!ht]
     \centering
     % \caption{Initial Results}
     \label{tab:results}
     \begin{tabular}{|l|l|l|l|}
     \hline
-    Model     & Batch size  & Allocator          & Images/sec         \\ \hline
+    Model     & Batch size  & Allocator          & Images/sec\footnote{Average of 5 runs}         \\ \hline
     ResNet-50 & $16$        & \texttt{BFCMalloc} & \resnettimebfc     \\ \cline{3-4} 
               &             & \texttt{CuMalloc}  & \resnettimecuda    \\ \cline{3-4} 
               &             & \texttt{Halloc}    & \resnettimehalloc  \\ \hline
@@ -239,6 +242,54 @@ Improving allocation for \textbf{machine learning} means better performance for 
     \end{tabular}
     \end{table}
 \end{exampleblock}
+
+\end{frame}
+
+\begin{frame}[fragile]{Results and Analysis}
+
+\metroset{block=fill}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=\textwidth]{../Quantitative_Python/histogram.pdf}
+  \caption{Object sizes requested for allocation (simulated data)}
+  \label{fig:hist}
+\end{figure}
+
+\end{frame}
+
+% \begin{frame}[fragile]{Conclusion}
+
+% \metroset{block=fill}
+
+% \begin{alertblock}{Conclusion}
+%  \begin{itemize}
+%      \item TODO
+%  \end{itemize}
+% \end{alertblock}
+
+% \end{frame}
+
+\begin{frame}[fragile]{Future Work}
+
+\metroset{block=fill}
+
+\begin{alertblock}{Match dynamic allocators to models}
+Currently TensorFlow uses a one-solution-fits-all approach. There are however differences in each model's allocation patterns that could be matched to a specific allocator or parameters that could be configured at compile time which could speed up the computation.
+\end{alertblock}
+
+\begin{alertblock}{Add runtime configurable options}
+Machine Learning models can have many runtime configurable options. These can also influence the performance of the memory allocator. For instance \texttt{Halloc} has a size parameter to determine which size objects are handled by the default allocator. Matching these options at runtime to the options of the model could also speed up the computation.
+\end{alertblock}
+
+\end{frame}
+
+\begin{frame}[fragile]{Questions?}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=\textwidth]{images/gpx.png}
+\end{figure}
 
 \end{frame}
 
