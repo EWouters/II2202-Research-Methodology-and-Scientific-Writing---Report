@@ -223,7 +223,7 @@ In the present research paper, we offer a comparison of the performance of sever
 
 Different dynamic memory allocation algorithms capable to run on the GPU are selected and studied based on different factors (such as \textit{speed}, \textit{memory management} and \textit{object sizes} requested for allocation). The algorithms chosen are: \texttt{CUDAMalloc} (or \texttt{cuMalloc}), \texttt{BFCMalloc} and \texttt{Halloc}.
 
-Descriptions of TensorFlow, the benchmark, the CNN models that are studied, the dynamic memory allocation algorithms and possible issues with dynamic memory allocation in general are under the sub-section \textit{\nameref{sec:theoretical-framework}} of this \textit{\nameref{sec:introduction}} section. In section \ref{sec:questions}, \textit{\nameref{sec:questions}}, it is laid out the conclusions we want to make and our expectations of the results, before running the benchmark. Most algorithms come accompanied with their own descriptions that offer an idea in which situations such algorithms would behave better than in other situations. Section \ref{sec:methods}, \textit{\nameref{sec:methods}}, includes the system configuration on which the the tests were executed, as well as the description of the test paradigm this study entails. \textit{Results and analysis} includes the final graphs and tables with data after an extensive run of our tests. Here, we also discuss the different aspects that such results entail: there's no one allocator that satisfies all supposed requirements. Finally, under the \textit{Discussion} section, we draw a conclusion for what allocators are the best in which cases.
+Descriptions of TensorFlow, the benchmark, the CNN models that are studied, the dynamic memory allocation algorithms and possible issues with dynamic memory allocation in general are under the sub-section \textit{\nameref{sec:theoretical-framework}} of this \textit{\nameref{sec:introduction}} section. In section \ref{sec:questions}, \textit{\nameref{sec:questions}}, it is laid out the conclusions we want to make and our expectations of the results, before running the benchmark. Most algorithms come accompanied with their own descriptions that offer an idea in which situations such algorithms would behave better than in other situations. Section \ref{sec:methods}, \textit{\nameref{sec:methods}}, includes the system configuration on which the the tests were executed, as well as the description of the test paradigm this study entails. Section \ref{sec:results-and-analysis}, \textit{\nameref{sec:results-and-analysis}} includes the final graphs and tables with data after an extensive run of our tests. Here, we also discuss the different aspects that such results entail: there's no one allocator that satisfies all supposed requirements. Finally, under the section \ref{sec:discussion}, \textit{\nameref{sec:discussion}}, we draw a conclusion for what allocators are the best in which cases.
 
 
 
@@ -235,9 +235,9 @@ Descriptions of TensorFlow, the benchmark, the CNN models that are studied, the 
 
 TensorFlow is an open-source software library that can perform numerical computation using data flow graphs. It can therefore perform machine learning in a faster and easier manner, being one of its main application purposes. TensorFlow was developed and used in-house by a research team at Google, being released afterwards to the public on November 2015 on GitHub. The very first public version of TensorFlow contains parts of another deep learning project named Caffe, developed at University of California, having a copyright notice alongside, dated 2014.
 
-Yet, ever since TensorFlow was developed, its main dynamic memory allocation algorithm for GPU use is the BFCAllocator. In its own source code, BFCAllocator is described to be: "a memory allocator that implements a 'best-fit with coalescing' algorithm.  [...] [It] is essentially a very simple version of Doug Lea's malloc (dlmalloc) \cite{dlmalloc}."
+Yet, ever since TensorFlow was developed, its main dynamic memory allocation algorithm for GPU use is the \texttt{BFCAllocator}. In its own source code, \texttt{BFCAllocator} is described to be: \textit{a memory allocator that implements a 'best-fit with coalescing' algorithm.  [...] [It] is essentially a very simple version of Doug Lea's malloc (dlmalloc) \cite{dlmalloc}}.
 
-CUDA's own dynamic memory allocator, \texttt{cuMalloc}, is kept as an alternative, easily selectable before running TensorFlow. It is however composed of proprietary code and does not share anything else but the header file that allows it to be used. As such, we cannot investigate the code to see what type of allocator this is. However \citeauthor{Vinkler2015} states that \texttt{cuMalloc} is relatively slow for small memory allocations.
+CUDA's own dynamic memory allocator, \texttt{cuMalloc}, is kept as an easy selectable alternative, before running TensorFlow. It is however composed of proprietary code and does not share anything else but the header file that allows it to be used. As such, we cannot investigate the code to see what type of allocator this is. However \citeauthor{Vinkler2015} states that \texttt{cuMalloc} is relatively slow for small memory allocations.
 % As such, we cannot say what type of allocator \texttt{cuMalloc} is -- as different allocator algorithms can be categorized in different types.
 
 In our initial comparisons, we have found TensorFlow's default allocator, BFCAllocator, to attain ~8 images per second when processing the ResNet-50 model benchmark, while \texttt{cuMalloc} attains only ~5.3 images per second. This proves that there is significance in such a research, as choosing the right dynamic memory allocator can have a large impact on the performance of high end algorithms and computing techniques.
@@ -375,6 +375,12 @@ AlexNet   & $32$        & \texttt{BFCMalloc} & \alexnettimebfc    \\ \cline{3-4}
           &             & \texttt{Halloc}    & \alexnettimehalloc \\ \hline
 \end{tabular}
 \end{table}
+
+\begin{figure}
+  \caption{A picture of a gull.}
+  \centering
+    \includegraphics[width=0.5\textwidth]{"../Quantitative Python/histogram.eps"}
+\end{figure}
 
 Initial tests have shown that profiling GPU accelerated sessions in TensorFlow takes a lot of compute time. Compiling TensorFlow takes about two hours on the workstation that is used for benchmarking. The full benchmark as it is run on the website of TensorFlow cannot be run on the NVIDIA K1100M GPU, as it will run out of memory. Decreasing the batch size from 32 to 16 fixes this problem.
 
