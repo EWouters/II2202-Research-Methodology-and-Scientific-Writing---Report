@@ -16,51 +16,19 @@ Generating model
 Running warm up
 Done warm up
 Step	Img/sec	total_loss
-1	images/sec: 40.4 +/- 0.0 (jitter = 0.0)	7.350
-10	images/sec: 40.4 +/- 0.0 (jitter = 0.1)	7.350
-20	images/sec: 40.3 +/- 0.0 (jitter = 0.1)	7.350
-30	images/sec: 40.2 +/- 0.0 (jitter = 0.2)	7.350
-40	images/sec: 40.1 +/- 0.0 (jitter = 0.2)	7.350
-50	images/sec: 40.1 +/- 0.0 (jitter = 0.2)	7.350
-60	images/sec: 40.1 +/- 0.0 (jitter = 0.2)	7.350
-70	images/sec: 40.1 +/- 0.0 (jitter = 0.2)	7.350
-80	images/sec: 40.2 +/- 0.0 (jitter = 0.2)	7.350
-90	images/sec: 40.2 +/- 0.0 (jitter = 0.2)	7.350
-100	images/sec: 40.2 +/- 0.0 (jitter = 0.2)	7.350
+1	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.336
+10	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.336
+20	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.336
+30	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.336
+40	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.336
+50	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.336
+60	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.336
+70	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.336
+80	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.336
+90	images/sec: 35.8 +/- 0.0 (jitter = 0.1)	7.336
+100	images/sec: 35.8 +/- 0.0 (jitter = 0.1)	7.336
 ----------------------------------------------------------------
-total images/sec: 40.17
-----------------------------------------------------------------
-TensorFlow:  1.11
-Model:       alexnet
-Dataset:     imagenet (synthetic)
-Mode:        training
-SingleSess:  False
-Batch size:  32 global
-             32.0 per device
-Num batches: 100
-Num epochs:  0.00
-Devices:     ['/gpu:0']
-Data format: NCHW
-Optimizer:   sgd
-Variables:   parameter_server
-==========
-Generating model
-Running warm up
-Done warm up
-Step	Img/sec	total_loss
-1	images/sec: 40.1 +/- 0.0 (jitter = 0.0)	7.359
-10	images/sec: 40.2 +/- 0.0 (jitter = 0.2)	7.358
-20	images/sec: 40.1 +/- 0.1 (jitter = 0.2)	7.358
-30	images/sec: 40.1 +/- 0.0 (jitter = 0.2)	7.359
-40	images/sec: 40.2 +/- 0.0 (jitter = 0.2)	7.359
-50	images/sec: 40.2 +/- 0.0 (jitter = 0.2)	7.359
-60	images/sec: 40.2 +/- 0.0 (jitter = 0.2)	7.359
-70	images/sec: 40.2 +/- 0.0 (jitter = 0.2)	7.359
-80	images/sec: 40.2 +/- 0.0 (jitter = 0.2)	7.359
-90	images/sec: 40.3 +/- 0.0 (jitter = 0.2)	7.359
-100	images/sec: 40.3 +/- 0.0 (jitter = 0.2)	7.359
-----------------------------------------------------------------
-total images/sec: 40.26
+total images/sec: 35.81
 ----------------------------------------------------------------
 TensorFlow:  1.11
 Model:       alexnet
@@ -80,51 +48,19 @@ Generating model
 Running warm up
 Done warm up
 Step	Img/sec	total_loss
-1	images/sec: 40.3 +/- 0.0 (jitter = 0.0)	7.371
-10	images/sec: 40.2 +/- 0.1 (jitter = 0.1)	7.370
-20	images/sec: 40.2 +/- 0.1 (jitter = 0.1)	7.369
-30	images/sec: 40.2 +/- 0.0 (jitter = 0.1)	7.371
-40	images/sec: 40.2 +/- 0.0 (jitter = 0.1)	7.371
-50	images/sec: 40.3 +/- 0.0 (jitter = 0.1)	7.371
-60	images/sec: 40.3 +/- 0.0 (jitter = 0.1)	7.371
-70	images/sec: 40.3 +/- 0.0 (jitter = 0.1)	7.371
-80	images/sec: 40.3 +/- 0.0 (jitter = 0.1)	7.371
-90	images/sec: 40.3 +/- 0.0 (jitter = 0.1)	7.371
-100	images/sec: 40.3 +/- 0.0 (jitter = 0.1)	7.371
+1	images/sec: 35.9 +/- 0.0 (jitter = 0.0)	7.353
+10	images/sec: 35.8 +/- 0.0 (jitter = 0.1)	7.353
+20	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.353
+30	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.353
+40	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.353
+50	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.353
+60	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.353
+70	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.353
+80	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.353
+90	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.353
+100	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.353
 ----------------------------------------------------------------
-total images/sec: 40.26
-----------------------------------------------------------------
-TensorFlow:  1.11
-Model:       alexnet
-Dataset:     imagenet (synthetic)
-Mode:        training
-SingleSess:  False
-Batch size:  32 global
-             32.0 per device
-Num batches: 100
-Num epochs:  0.00
-Devices:     ['/gpu:0']
-Data format: NCHW
-Optimizer:   sgd
-Variables:   parameter_server
-==========
-Generating model
-Running warm up
-Done warm up
-Step	Img/sec	total_loss
-1	images/sec: 40.4 +/- 0.0 (jitter = 0.0)	7.347
-10	images/sec: 40.3 +/- 0.1 (jitter = 0.1)	7.347
-20	images/sec: 40.2 +/- 0.1 (jitter = 0.2)	7.347
-30	images/sec: 40.1 +/- 0.0 (jitter = 0.3)	7.347
-40	images/sec: 40.1 +/- 0.0 (jitter = 0.2)	7.347
-50	images/sec: 40.1 +/- 0.0 (jitter = 0.2)	7.347
-60	images/sec: 40.1 +/- 0.0 (jitter = 0.2)	7.347
-70	images/sec: 40.2 +/- 0.0 (jitter = 0.1)	7.347
-80	images/sec: 40.2 +/- 0.0 (jitter = 0.1)	7.347
-90	images/sec: 40.2 +/- 0.0 (jitter = 0.1)	7.347
-100	images/sec: 40.1 +/- 0.0 (jitter = 0.2)	7.347
-----------------------------------------------------------------
-total images/sec: 40.06
+total images/sec: 35.81
 ----------------------------------------------------------------
 TensorFlow:  1.11
 Model:       alexnet
@@ -144,17 +80,81 @@ Generating model
 Running warm up
 Done warm up
 Step	Img/sec	total_loss
-1	images/sec: 40.3 +/- 0.0 (jitter = 0.0)	7.359
-10	images/sec: 40.3 +/- 0.0 (jitter = 0.1)	7.359
-20	images/sec: 40.3 +/- 0.0 (jitter = 0.1)	7.359
-30	images/sec: 40.3 +/- 0.0 (jitter = 0.1)	7.359
-40	images/sec: 40.3 +/- 0.0 (jitter = 0.1)	7.359
-50	images/sec: 40.3 +/- 0.0 (jitter = 0.1)	7.359
-60	images/sec: 40.2 +/- 0.0 (jitter = 0.1)	7.359
-70	images/sec: 40.2 +/- 0.0 (jitter = 0.1)	7.359
-80	images/sec: 40.2 +/- 0.0 (jitter = 0.1)	7.359
-90	images/sec: 40.2 +/- 0.0 (jitter = 0.1)	7.359
-100	images/sec: 40.2 +/- 0.0 (jitter = 0.1)	7.359
+1	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.341
+10	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.341
+20	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.341
+30	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.341
+40	images/sec: 35.8 +/- 0.0 (jitter = 0.1)	7.341
+50	images/sec: 35.8 +/- 0.0 (jitter = 0.1)	7.341
+60	images/sec: 35.8 +/- 0.0 (jitter = 0.1)	7.341
+70	images/sec: 35.8 +/- 0.0 (jitter = 0.1)	7.341
+80	images/sec: 35.7 +/- 0.0 (jitter = 0.1)	7.341
+90	images/sec: 35.7 +/- 0.0 (jitter = 0.1)	7.341
+100	images/sec: 35.7 +/- 0.0 (jitter = 0.1)	7.341
 ----------------------------------------------------------------
-total images/sec: 40.20
+total images/sec: 35.74
+----------------------------------------------------------------
+TensorFlow:  1.11
+Model:       alexnet
+Dataset:     imagenet (synthetic)
+Mode:        training
+SingleSess:  False
+Batch size:  32 global
+             32.0 per device
+Num batches: 100
+Num epochs:  0.00
+Devices:     ['/gpu:0']
+Data format: NCHW
+Optimizer:   sgd
+Variables:   parameter_server
+==========
+Generating model
+Running warm up
+Done warm up
+Step	Img/sec	total_loss
+1	images/sec: 35.5 +/- 0.0 (jitter = 0.0)	7.351
+10	images/sec: 35.6 +/- 0.0 (jitter = 0.1)	7.351
+20	images/sec: 35.6 +/- 0.0 (jitter = 0.1)	7.351
+30	images/sec: 35.7 +/- 0.0 (jitter = 0.1)	7.351
+40	images/sec: 35.6 +/- 0.0 (jitter = 0.1)	7.351
+50	images/sec: 35.4 +/- 0.1 (jitter = 0.1)	7.351
+60	images/sec: 35.2 +/- 0.1 (jitter = 0.2)	7.351
+70	images/sec: 35.2 +/- 0.1 (jitter = 0.2)	7.351
+80	images/sec: 35.3 +/- 0.1 (jitter = 0.2)	7.351
+90	images/sec: 35.3 +/- 0.1 (jitter = 0.2)	7.351
+100	images/sec: 35.3 +/- 0.1 (jitter = 0.2)	7.351
+----------------------------------------------------------------
+total images/sec: 35.15
+----------------------------------------------------------------
+TensorFlow:  1.11
+Model:       alexnet
+Dataset:     imagenet (synthetic)
+Mode:        training
+SingleSess:  False
+Batch size:  32 global
+             32.0 per device
+Num batches: 100
+Num epochs:  0.00
+Devices:     ['/gpu:0']
+Data format: NCHW
+Optimizer:   sgd
+Variables:   parameter_server
+==========
+Generating model
+Running warm up
+Done warm up
+Step	Img/sec	total_loss
+1	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.340
+10	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.340
+20	images/sec: 35.8 +/- 0.0 (jitter = 0.0)	7.340
+30	images/sec: 35.8 +/- 0.0 (jitter = 0.1)	7.340
+40	images/sec: 35.7 +/- 0.0 (jitter = 0.1)	7.340
+50	images/sec: 35.7 +/- 0.0 (jitter = 0.1)	7.340
+60	images/sec: 35.7 +/- 0.0 (jitter = 0.1)	7.340
+70	images/sec: 35.7 +/- 0.0 (jitter = 0.1)	7.340
+80	images/sec: 35.5 +/- 0.1 (jitter = 0.1)	7.340
+90	images/sec: 35.4 +/- 0.1 (jitter = 0.1)	7.340
+100	images/sec: 35.4 +/- 0.1 (jitter = 0.1)	7.340
+----------------------------------------------------------------
+total images/sec: 35.44
 ----------------------------------------------------------------
