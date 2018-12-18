@@ -1,0 +1,92 @@
+Parsing Inputs...
+
+=========================Options=============================
+-max_depth                  20
+-min_bytes                  1
+-min_peak_bytes             0
+-min_residual_bytes         0
+-min_output_bytes           0
+-min_micros                 1
+-min_accelerator_micros     0
+-min_cpu_micros             0
+-min_params                 0
+-min_float_ops              0
+-min_occurrence             0
+-step                       -1
+-order_by                   accelerator_micros
+-account_type_regexes       .*
+-start_name_regexes         .*
+-trim_name_regexes          
+-show_name_regexes          .*
+-hide_name_regexes          
+-account_displayed_op_only  true
+-select                     bytes,micros
+-output                     stdout:
+
+==================Model Analysis Report======================
+
+Doc:
+op: The nodes are operation kernel type, such as MatMul, Conv2D. Graph nodes belonging to the same type are aggregated together.
+requested bytes: The memory requested by the operation, accumulatively.
+total execution time: Sum of accelerator execution time and cpu execution time.
+cpu execution time: The time from the start to the end of the operation. It's the sum of actual cpu run time plus the time that it spends waiting if part of computation is launched asynchronously.
+accelerator execution time: Time spent executing on the accelerator. This is normally measured by the actual hardware library.
+
+Profile:
+node name | requested bytes | total execution time | accelerator execution time | cpu execution time
+Conv2D                      1137.88MB (100.00%, 34.37%),     395.83ms (100.00%, 25.89%),     188.93ms (100.00%, 22.32%),     206.90ms (100.00%, 30.31%)
+Conv2DBackpropFilter          672.78MB (65.63%, 20.32%),      379.73ms (74.11%, 24.84%),      186.00ms (77.68%, 21.98%),      193.73ms (69.69%, 28.38%)
+MatMul                         237.91MB (45.31%, 7.19%),      210.48ms (49.28%, 13.77%),      176.80ms (55.70%, 20.89%),        33.68ms (41.30%, 4.93%)
+Conv2DBackpropInput           813.56MB (38.12%, 24.57%),      237.06ms (35.51%, 15.50%),      114.34ms (34.81%, 13.51%),      122.72ms (36.37%, 17.98%)
+ApplyGradientDescent                  0B (0.00%, 0.00%),        44.69ms (20.01%, 2.92%),        44.36ms (21.31%, 5.24%),          328us (18.39%, 0.05%)
+AddN                                  0B (0.00%, 0.00%),        44.37ms (17.08%, 2.90%),        43.98ms (16.06%, 5.20%),          377us (18.34%, 0.06%)
+MaxPoolGrad                     48.23MB (13.55%, 1.46%),        24.39ms (14.18%, 1.60%),        23.25ms (10.87%, 2.75%),         1.14ms (18.28%, 0.17%)
+Mul                            248.42MB (12.09%, 7.50%),        29.33ms (12.59%, 1.92%),         22.90ms (8.12%, 2.71%),         6.42ms (18.12%, 0.94%)
+BiasAdd                               0B (0.00%, 0.00%),         8.25ms (10.67%, 0.54%),          8.08ms (5.41%, 0.95%),          161us (17.18%, 0.02%)
+L2Loss                            9.78KB (4.59%, 0.00%),        32.47ms (10.13%, 2.12%),          7.27ms (4.46%, 0.86%),        25.19ms (17.15%, 3.69%)
+Transpose                        19.79MB (4.59%, 0.60%),         20.62ms (8.00%, 1.35%),          6.88ms (3.60%, 0.81%),        13.74ms (13.46%, 2.01%)
+MaxPool                          11.30MB (3.99%, 0.34%),         13.98ms (6.66%, 0.91%),          6.66ms (2.79%, 0.79%),         7.32ms (11.45%, 1.07%)
+ReluGrad                              0B (0.00%, 0.00%),          6.37ms (5.74%, 0.42%),          6.19ms (2.00%, 0.73%),          176us (10.38%, 0.03%)
+Relu                                  0B (0.00%, 0.00%),          6.03ms (5.32%, 0.39%),          5.92ms (1.27%, 0.70%),          111us (10.35%, 0.02%)
+BiasAddGrad                     118.66MB (3.65%, 3.58%),          9.17ms (4.93%, 0.60%),          3.47ms (0.57%, 0.41%),         5.70ms (10.34%, 0.84%)
+SparseSoftmaxCrossEntropyWithLogits           384B (0.06%, 0.00%),          6.12ms (4.33%, 0.40%),           463us (0.16%, 0.05%),          5.66ms (9.50%, 0.83%)
+RealDiv                           1.05MB (0.06%, 0.03%),         58.83ms (3.93%, 3.85%),           312us (0.11%, 0.04%),         58.51ms (8.67%, 8.57%)
+_Z6hafreePPvPb                        0B (0.00%, 0.00%),           312us (0.08%, 0.02%),           312us (0.07%, 0.04%),             0us (0.10%, 0.00%)
+Add                                   0B (0.00%, 0.00%),           168us (0.06%, 0.01%),           109us (0.03%, 0.01%),            58us (0.10%, 0.01%)
+RandomUniform                     1.05MB (0.03%, 0.03%),           681us (0.05%, 0.04%),            91us (0.02%, 0.01%),           590us (0.09%, 0.09%)
+Floor                                 0B (0.00%, 0.00%),           102us (0.01%, 0.01%),            71us (0.01%, 0.01%),            30us (0.00%, 0.00%)
+
+======================End of Report==========================
+TensorFlow:  1.11
+Model:       alexnet
+Dataset:     imagenet (synthetic)
+Mode:        training
+SingleSess:  False
+Batch size:  32 global
+             32.0 per device
+Num batches: 100
+Num epochs:  0.00
+Devices:     ['/gpu:0']
+Data format: NCHW
+Optimizer:   sgd
+Variables:   parameter_server
+==========
+Generating model
+Running warm up
+Done warm up
+Step	Img/sec	total_loss
+1	images/sec: 31.8 +/- 0.0 (jitter = 0.0)	7.345
+10	images/sec: 34.9 +/- 0.3 (jitter = 0.1)	7.345
+20	images/sec: 35.5 +/- 0.2 (jitter = 0.6)	7.345
+30	images/sec: 35.7 +/- 0.1 (jitter = 0.1)	7.345
+40	images/sec: 35.8 +/- 0.1 (jitter = 0.1)	7.345
+50	images/sec: 35.9 +/- 0.1 (jitter = 0.1)	7.345
+60	images/sec: 35.9 +/- 0.1 (jitter = 0.0)	7.345
+70	images/sec: 35.9 +/- 0.1 (jitter = 0.0)	7.345
+80	images/sec: 35.9 +/- 0.1 (jitter = 0.0)	7.345
+90	images/sec: 36.0 +/- 0.1 (jitter = 0.0)	7.345
+100	images/sec: 36.0 +/- 0.0 (jitter = 0.0)	7.345
+----------------------------------------------------------------
+total images/sec: 34.76
+----------------------------------------------------------------
+Dumping ProfileProto to halloc_alex_nc-32.prof
