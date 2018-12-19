@@ -13,4 +13,19 @@ Optimizer:   sgd
 Variables:   parameter_server
 ==========
 Generating model
+TensorFlow:  1.11
+Model:       resnet50
+Dataset:     imagenet (synthetic)
+Mode:        training
+SingleSess:  False
+Batch size:  16 global
+             16.0 per device
+Num batches: 100
+Num epochs:  0.00
+Devices:     ['/gpu:0']
+Data format: NCHW
+Optimizer:   sgd
+Variables:   parameter_server
+==========
+Generating model
 Running warm up

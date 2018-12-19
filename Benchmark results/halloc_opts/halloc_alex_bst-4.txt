@@ -16,17 +16,17 @@ Generating model
 Running warm up
 Done warm up
 Step	Img/sec	total_loss
-1	images/sec: 36.1 +/- 0.0 (jitter = 0.0)	7.353
-10	images/sec: 36.1 +/- 0.0 (jitter = 0.0)	7.353
-20	images/sec: 36.1 +/- 0.0 (jitter = 0.0)	7.353
-30	images/sec: 36.1 +/- 0.0 (jitter = 0.0)	7.353
-40	images/sec: 36.1 +/- 0.0 (jitter = 0.0)	7.353
-50	images/sec: 36.1 +/- 0.0 (jitter = 0.0)	7.353
-60	images/sec: 36.1 +/- 0.0 (jitter = 0.0)	7.353
-70	images/sec: 36.1 +/- 0.0 (jitter = 0.0)	7.353
-80	images/sec: 36.1 +/- 0.0 (jitter = 0.0)	7.353
-90	images/sec: 36.1 +/- 0.0 (jitter = 0.0)	7.353
-100	images/sec: 36.1 +/- 0.0 (jitter = 0.0)	7.353
+1	images/sec: 36.1 +/- 0.0 (jitter = 0.0)	7.346
+10	images/sec: 35.9 +/- 0.0 (jitter = 0.0)	7.346
+20	images/sec: 36.0 +/- 0.0 (jitter = 0.1)	7.346
+30	images/sec: 36.0 +/- 0.0 (jitter = 0.1)	7.346
+40	images/sec: 36.0 +/- 0.0 (jitter = 0.1)	7.346
+50	images/sec: 36.0 +/- 0.0 (jitter = 0.1)	7.346
+60	images/sec: 36.0 +/- 0.0 (jitter = 0.1)	7.346
+70	images/sec: 36.0 +/- 0.0 (jitter = 0.1)	7.346
+80	images/sec: 36.0 +/- 0.0 (jitter = 0.1)	7.346
+90	images/sec: 36.0 +/- 0.0 (jitter = 0.1)	7.346
+100	images/sec: 36.1 +/- 0.0 (jitter = 0.1)	7.346
 ----------------------------------------------------------------
-total images/sec: 36.09
+total images/sec: 36.05
 ----------------------------------------------------------------

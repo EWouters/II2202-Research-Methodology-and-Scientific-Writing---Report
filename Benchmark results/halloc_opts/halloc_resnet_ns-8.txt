@@ -13,4 +13,3 @@ Optimizer:   sgd
 Variables:   parameter_server
 ==========
 Generating model
-Running warm up
