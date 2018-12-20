@@ -1,0 +1,64 @@
+TensorFlow:  1.11
+Model:       resnet50
+Dataset:     imagenet (synthetic)
+Mode:        training
+SingleSess:  False
+Batch size:  16 global
+             16.0 per device
+Num batches: 100
+Num epochs:  0.00
+Devices:     ['/gpu:0']
+Data format: NCHW
+Optimizer:   sgd
+Variables:   parameter_server
+==========
+Generating model
+Running warm up
+Done warm up
+Step	Img/sec	total_loss
+1	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.346
+10	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.395
+20	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.308
+30	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.799
+40	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.086
+50	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	7.934
+60	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.026
+70	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.080
+80	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.268
+90	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.410
+100	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.172
+----------------------------------------------------------------
+total images/sec: 5.82
+----------------------------------------------------------------
+TensorFlow:  1.11
+Model:       resnet50
+Dataset:     imagenet (synthetic)
+Mode:        training
+SingleSess:  False
+Batch size:  16 global
+             16.0 per device
+Num batches: 100
+Num epochs:  0.00
+Devices:     ['/gpu:0']
+Data format: NCHW
+Optimizer:   sgd
+Variables:   parameter_server
+==========
+Generating model
+Running warm up
+Done warm up
+Step	Img/sec	total_loss
+1	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.346
+10	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.395
+20	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.308
+30	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.800
+40	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.086
+50	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	7.934
+60	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.020
+70	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.085
+80	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.256
+90	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.405
+100	images/sec: 5.8 +/- 0.0 (jitter = 0.0)	8.191
+----------------------------------------------------------------
+total images/sec: 5.82
+----------------------------------------------------------------
