@@ -46,9 +46,9 @@
 %%----------------------------------------------------------------------------
 %%   pcap2tex stuff
 %%----------------------------------------------------------------------------
- \usepackage[dvipsnames*,svgnames]{xcolor} %% For extended colors
- \usepackage{tikz}
- \usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit,positioning,calc,shapes}
+%  \usepackage[dvipsnames*,svgnames]{xcolor} %% For extended colors
+%  \usepackage{tikz}
+%  \usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit,positioning,calc,shapes}
 
 %% \usepackage{pgfmath}	% --math engine
 %%----------------------------------------------------------------------------
@@ -128,20 +128,22 @@
     inner sep = 0.8 ex,
     rounded corners=4pt]
 
-\renewcommand{\@todonotes@drawInlineNote}{%
-        {\begin{tikzpicture}[remember picture,baseline=(current bounding box.base)]%
-            \draw node[inlinenotestyle,font=\@todonotes@sizecommand, anchor=base,baseline]{%
-              \if@todonotes@authorgiven%
-                {\noindent \@todonotes@sizecommand \@todonotes@author:\,\@todonotes@text}%
-              \else%
-                {\noindent \@todonotes@sizecommand \@todonotes@text}%
-              \fi};%
-           \end{tikzpicture}}}%
-\newcommand{\mytodo}[1]{\@todo[inline]{#1}}%
+% \renewcommand{\@todonotes@drawInlineNote}{%
+%         {\begin{tikzpicture}[remember picture,baseline=(current bounding box.base)]%
+%             \draw node[inlinenotestyle,font=\@todonotes@sizecommand, anchor=base,baseline]{%
+%               \if@todonotes@authorgiven%
+%                 {\noindent \@todonotes@sizecommand \@todonotes@author:\,\@todonotes@text}%
+%               \else%
+%                 {\noindent \@todonotes@sizecommand \@todonotes@text}%
+%               \fi};%
+%           \end{tikzpicture}}}%
+% \newcommand{\mytodo}[1]{\@todo[inline]{#1}}%
 \makeatother
 
 \setcounter{tocdepth}{3}	%% 3 depth levels in TOC
 \setcounter{secnumdepth}{5}
+
+\usepackage{subcaption}
 
 \usepackage{grffile} % To remove filename from pdf figure
 
@@ -412,9 +414,17 @@ AlexNet   & $32$        & \texttt{BFCMalloc} & \alexnettimebfc    \\ \cline{3-4}
 
 \begin{figure}[!ht]
   \centering
-    \includegraphics[width=0.7\textwidth]{../Quantitative_Python/hist_MB_ylog.pdf}
-  \caption{Object sizes requested for allocation (ResNet-50)}
-  \label{fig:hist}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \includegraphics[width=\textwidth]{../Quantitative_Python/ResNet-50_hist_MB_ylog.pdf}
+    \caption{ResNet-50}
+    \label{fig:hist_resnet}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \includegraphics[width=\textwidth]{../Quantitative_Python/AlexNet_hist_MB_ylog.pdf}
+    \caption{AlexNet}
+    \label{fig:hist_resnet}
+  \end{subfigure}
+  \caption{Object sizes requested for allocation}
 \end{figure}
 
 \section{Discussion}
