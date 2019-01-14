@@ -153,6 +153,25 @@ abstract = "This chapter provides an application study of how CUDA and GPU compu
 
  @article{Ramsundar_Kearnes_Riley_Webster_Konerding_Pande_2015, title={Massively Multitask Networks for Drug Discovery}, url={http://arxiv.org/abs/1502.02072}, abstractNote={Massively multitask neural architectures provide a learning framework for drug discovery that synthesizes information from many distinct biological sources. To train these architectures at scale, we gather large amounts of data from public sources to create a dataset of nearly 40 million measurements across more than 200 biological targets. We investigate several aspects of the multitask framework by performing a series of empirical studies and obtain some interesting results: (1) massively multitask networks obtain predictive accuracies significantly better than single-task methods, (2) the predictive power of multitask networks improves as additional tasks and data are added, (3) the total amount of data and the total number of tasks both contribute significantly to multitask improvement, and (4) multitask networks afford limited transferability to tasks not in the training set. Our results underscore the need for greater data sharing and further algorithmic innovation to accelerate the drug discovery process.}, note={arXiv: 1502.02072}, journal={arXiv:1502.02072 [cs, stat]}, author={Ramsundar, Bharath and Kearnes, Steven and Riley, Patrick and Webster, Dale and Konerding, David and Pande, Vijay}, year={2015}, month={Feb} }
 
+ @misc{fdgmalloc, title={FDGMalloc}, url={https://www.gcc.tu-darmstadt.de/home/proj/fdgmalloc/index.en.jsp}, journal={Graphics, Capture and Massively Parallel Computing – Technische Universität Darmstadt}, author={Graphics, Capture and Massively Parallel Computing}, note={(visited on 2019-01-10)} }
+
+@misc{xmalloc,
+name = {XMalloc: A Scalable Lock-free Dynamic Memory Allocator for Many-core Machines - Semantic Scholar}, url={https://www.semanticscholar.org/paper/XMalloc%3A-A-Scalable-Lock-free-Dynamic-Memory-for-Huang-Rodrigues/7d69b0ba423c84e34ef707e7470f3a0c8c2a9d28} }
+
+@INPROCEEDINGS{scatter-alloc,
+author={M. Steinberger and M. Kenzel and B. Kainz and D. Schmalstieg},
+booktitle={2012 Innovative Parallel Computing (InPar)},
+title={ScatterAlloc: Massively parallel dynamic memory allocation for the GPU},
+year={2012},
+volume={},
+number={},
+pages={1-10},
+keywords={graphics processing units;parallel architectures;resource allocation;storage management;ScatterAlloc;massively parallel dynamic memory allocation;GPU;parallel architectures;graphics processing units;memory request scattering;hashing;allocation speed;data access time;fragmentation;NVIDIA CUDA toolkit;Resource management;Instruction sets;Graphics processing unit;Dynamic scheduling;Memory management;Kernel;dynamic memory allocation;GPU;massively parallel;hashing},
+doi={10.1109/InPar.2012.6339604},
+ISSN={},
+month={May},}
+
+
 @online{cucumber,
 author = {{Google Cloud Blog}},
 title = {{"How} a Japanese cucumber farmer is using deep learning and TensorFlow"},
@@ -198,4 +217,32 @@ This chapter discusses memory allocation functions in relation to pointers. When
     booktitle = {In Proceedings of the 5th international symposium on Memory management, ISMM ’06},
     year = {2006},
     pages = {115--125}
+}
+
+@incollection{BARRY2012227,
+title = "Chapter 8 - Embedded Linux",
+editor = "Peter Barry and Patrick Crowley",
+booktitle = "Modern Embedded Computing",
+publisher = "Morgan Kaufmann",
+address = "Boston",
+pages = "227 - 268",
+year = "2012",
+isbn = "978-0-12-391490-3",
+doi = "https://doi.org/10.1016/B978-0-12-391490-3.00008-4",
+url = "http://www.sciencedirect.com/science/article/pii/B9780123914903000084",
+author = "Peter Barry and Patrick Crowley"
+}
+
+@article{LEE2018359,
+title = "Optimal hyperparameter tuning of convolutional neural networks based on the parameter-setting-free harmony search algorithm",
+journal = "Optik",
+volume = "172",
+pages = "359 - 367",
+year = "2018",
+issn = "0030-4026",
+doi = "https://doi.org/10.1016/j.ijleo.2018.07.044",
+url = "http://www.sciencedirect.com/science/article/pii/S0030402618310167",
+author = "Woo-Young Lee and Seung-Min Park and Kwee-Bo Sim",
+keywords = "CNN, Hyperparameter tuning, PSF-HS algorithm",
+abstract = "Hyperparameters determine layer architecture in the feature extraction step of a convolutional neural network (CNN), and this affects classification accuracy and learning time. In this paper, we propose a method to improve CNN performance by hyperparameter tuning in the feature extraction step of CNN. In the proposed method, the hyperparameter is adjusted using a parameter-setting-free harmony search (PSF-HS) algorithm, which is a metaheuristic optimization method. In the PSF-HS algorithm, the hyperparameter to be adjusted is set as the harmony, and harmony memory is generated after generating the harmony. Harmony memory is updated based on the loss of a CNN. A simulation using CNN architecture with reference to LeNet-5 and a MNIST dataset, and a simulation using the CNN architecture with reference to CifarNet and a Cifar-10 dataset are performed. By two simulations, it is possible to improve the performance by tuning the hyperparameters in CNN architectures proposed in the past."
 }

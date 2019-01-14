@@ -14,6 +14,8 @@
 
 \usepackage[normalem]{ulem}
 
+\usepackage{subcaption}
+
 \usepackage{xspace}
 \newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
 
@@ -22,7 +24,7 @@
 
 \usepackage[backend=biber]{biblatex}
 % \usepackage[numbers]{natbib}
-\bibliography{../Final Report/II2202-report.bib}
+\bibliography{../Final report/II2202-report.bib}
 
 % \definecolor{white}{RGB}{255, 255, 255}
 % \definecolor{black}{RGB}{0, 0, 0}
@@ -51,12 +53,12 @@
 
 %\usepackage{grffile} % To remove filename from pdf figure
 
-\newcommand{\resnettimebfc}{$5.79$}     % ( 5.82 +  5.82 +  5.66 +  5.82 +  5.81)/5
-\newcommand{\resnettimecuda}{$5.29$}    % ( 5.26 +  5.29 +  5.27 +  5.31 +  5.32)/5     9.5% slower
-\newcommand{\resnettimehalloc}{$?$}     %
-\newcommand{\alexnettimebfc}{$41.62$}   % (41.61 + 41.66 + 41.60 + 41.61 + 41.61)/5
-\newcommand{\alexnettimecuda}{$40.19$}  % (40.17 + 40.26 + 40.26 + 40.06 + 40.20)/5     3.6% slower
-\newcommand{\alexnettimehalloc}{$?$}    %
+\newcommand{\resnettimebfc}{$5.79\pm0.022\%$}     % ( 5.82 +  5.82 +  5.66 +  5.82 +  5.81)/5
+\newcommand{\resnettimecuda}{$5.29\pm0.006\%$}    % ( 5.26 +  5.29 +  5.27 +  5.31 +  5.32)/5     9.5% slower
+\newcommand{\resnettimehalloc}{$not~working$}     %
+\newcommand{\alexnettimebfc}{$41.62\pm0.001\%$}   % (41.61 + 41.66 + 41.60 + 41.61 + 41.61)/5
+\newcommand{\alexnettimecuda}{$40.19\pm0.002\%$}  % (40.17 + 40.26 + 40.26 + 40.06 + 40.20)/5     3.6% slower
+\newcommand{\alexnettimehalloc}{$36.31\pm0.011\%$}% 
 
 % Pages
     \setbeamertemplate{footline}{%
@@ -64,7 +66,7 @@
 
 \title{GPU Dynamic memory allocation algorithms for Machine Learning: A survey}
 \author{Erik H. Wouters, Dragoş Ş. Perju \{\texttt{ehwo}$\mid$\texttt{dsperju}\}\texttt{@kth.se}}
-\date{November 30, 2018}
+\date{January 11, 2019}
 
 \institute{KTH Royal University of Technology \quad Stockholm, Sweden}
 % \titlegraphic{\hfill\includegraphics[height=1.5cm]{logo.pdf}}
@@ -99,12 +101,12 @@
 
 \begin{exampleblock}{Problem context}
  \begin{itemize}
- \item Dynamic memory allocation;
- \item Different applications use different allocators
+ \item Interest in dynamic memory allocation;
+ \item Different applications use different allocators on the CPU only
      \begin{itemize}
          \item e.g.: \texttt{malloc}, \texttt{jemalloc}, etc.;
      \end{itemize}
- \item Different architectures (CPU vs. GPU) have different issues with allocating dynamically
+ \item Different architectures (such as GPU) have different issues with allocating dynamically
      \begin{itemize}
          \item e.g.: \texttt{malloc} vs. \texttt{CudaMalloc}.
      \end{itemize}
@@ -128,11 +130,16 @@
 
 \begin{alertblock}{Problem statement}
 % We believe that \textbf{machine learning} applications can benefit from using a scientifically chosen dynamic memory allocator, in order to have an improved performance.
- We want to choose the best dynamic memory allocator when used with \textbf{TensorFlow}'s benchmark implementation of \textbf{ResNet-50}, in terms of overall speed, fragmentation and other metrics.
+ We want to choose the best dynamic memory allocator when used with \textbf{TensorFlow}'s benchmark implementation of \textbf{ResNet-50} and \textbf{AlexNet}, in terms of overall speed (images per second).
 \end{alertblock}
 
-\begin{exampleblock}{Hypothesis}
-Our hypothesis is that one or more of the algorithms described by \citeauthor{Vinkler2015} perform better as a memory allocator for TensorFlow's implementation of \textbf{ResNet-50} than the stock \texttt{BFCAllocator} or the standard \texttt{CudaMalloc} does, in terms of overall speed, fragmentation and stability.
+\begin{exampleblock}{Hypotheses}
+\begin{enumerate}
+\item TensorFlow allocates many smaller-sized objects, which \texttt{Halloc} favours in speed though its design.
+\item Using \texttt{Halloc} with TensorFlow, which is described to be much faster than \texttt{CUDAMalloc} (3 to 3000 times) [2], will bring a performance improvement to the speed of TensorFlow's benchmark (images per second).
+\item The configurable parameters of \texttt{Halloc} do not influence the speed of the benchmark.
+\end{enumerate}
+
 \end{exampleblock}
 
 % \begin{exampleblock}{More specifically}
@@ -149,9 +156,9 @@ Our hypothesis is that one or more of the algorithms described by \citeauthor{Vi
 \begin{exampleblock}{Related work}
 We extracted GPU memory allocator implementations from the source code of:
 
-\textit{M. Vinkler and V. Havran, “Register efficient dynamic memory allocator for GPUs” , Computer Graphics Forum, vol. 34, no. 8, pp. 143–154, 2015. [Online].} Available: \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/cgf.12666}
+[1] \textit{M. Vinkler and V. Havran, “Register efficient dynamic memory allocator for GPUs” , Computer Graphics Forum, vol. 34, no. 8, pp. 143–154, 2015. [Online].} Available: \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/cgf.12666}
 
-TensorFlow uses NVIDIA CUDA as a GPU library, and \texttt{BFCAllocator} or \texttt{CudaMalloc} as the primary dynamic GPU memory allocator.
+TensorFlow uses NVIDIA CUDA as a GPU library, and \texttt{BFCAllocator} or \texttt{CUDAMalloc} as the primary dynamic GPU memory allocator.
 \end{exampleblock}
 \end{frame}
 
@@ -162,14 +169,15 @@ TensorFlow uses NVIDIA CUDA as a GPU library, and \texttt{BFCAllocator} or \text
 
 \begin{alertblock}{GPU Dynamic memory allocation algorithms}
  \begin{itemize}
-     \item \textbf{BFCMalloc} - best-fit with coalescing;
-     \item \textbf{CudaMalloc} - proprietary algorithm of NVIDIA;
-     \item \textbf{Halloc} - hashing function to reduce the cost of small memory allocations.
+     \item \textbf{BFCMalloc} - Best-fit with coalescing;
+     \item \textbf{CudaMalloc} - Proprietary algorithm of NVIDIA;
+     \item \textbf{Halloc} - Hashing function used to reduce collision when many threads allocate. Favours small memory allocations.
  \end{itemize}
+ Other allocators studied: \textbf{XMalloc}, \textbf{ScatterAlloc}, \textbf{FDGMalloc} -- all slower than \textbf{Halloc}. \textbf{CMalloc} has a design that does not favour small memory allocations.
 \end{alertblock}
 
 \begin{exampleblock}{TensorFlow CNN benchmark}
-    \textbf{ResNet-50} - a deep learning convolutional neural network
+    \textbf{ResNet-50}, \textbf{AlexNet} - deep learning convolutional neural networks
 \end{exampleblock}
 
 \end{frame}
@@ -199,11 +207,12 @@ TensorFlow uses NVIDIA CUDA as a GPU library, and \texttt{BFCAllocator} or \text
 %Test different GPU dynamic memory allocation algorithms                           (such as: CudaMalloc and others);
 % Benchmark such algorithms using a Machine Learning workload (TensorFlow CNN benchmarks).
 \begin{enumerate}
-    \item Analyze memory allocation pattern of \texttt{ResNet-50}
-    \item Match pattern to memory allocator suggested by literature (\texttt{Halloc})
-    \item Add \texttt{Halloc} allocator to TensorFlow source code
-    \item Used standard benchmarks from TensorFlow to evaluate the performance compared to the built-in memory allocators
-    \item Analyze performance of allocator for a larger variety of models
+    \item Analyze memory allocation pattern of \texttt{ResNet-50}, \texttt{AlexNet};
+    \item Match pattern to memory allocator suggested by literature (\texttt{Halloc});
+    \item Add \texttt{Halloc} allocator to TensorFlow source code;
+    \item Use standard benchmarks on modified TensorFlow, to evaluate the performance compared to the built-in memory allocators;
+    \item \texttt{Halloc} is configurable through different parameters -- evaluate performance by changing them systematically.
+    
 \end{enumerate}
 
 \end{alertblock}
@@ -219,20 +228,40 @@ TensorFlow uses NVIDIA CUDA as a GPU library, and \texttt{BFCAllocator} or \text
 
 % \end{frame}
 
+\begin{frame}[fragile]{Results and Analysis}
+
+\metroset{block=fill}
+
+\begin{figure}[!ht]
+  \centering
+  \begin{subfigure}[b]{0.49\textwidth}
+    \includegraphics[width=\textwidth]{../Quantitative_Python/ResNet-50_hist_MB_ylog.pdf}
+    \caption{ResNet-50}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.49\textwidth}
+    \includegraphics[width=\textwidth]{../Quantitative_Python/AlexNet_hist_MB_ylog.pdf}
+    \caption{AlexNet}
+  \end{subfigure}
+  \caption{Histogram of object sizes requested for allocation for the two models ($32$ bins). Note that the number of allocations is depicted on a logarithmic scale, so each division is an order of magnitude.}
+  \label{fig:hist}
+\end{figure}
+
+\end{frame}
+
 %     Results and Analysis (r slides)
 \begin{frame}[fragile]{Results and Analysis}
 
 \metroset{block=fill}
 
-\begin{exampleblock}{Initial Results}
+\begin{exampleblock}{Benchmark Results}
 
     \begin{table}[!ht]
     \centering
-    % \caption{Initial Results}
+    \caption{Benchmark Results}
     \label{tab:results}
     \begin{tabular}{|l|l|l|l|}
     \hline
-    Model     & Batch size  & Allocator          & Images/sec\footnote{Average of 5 runs}         \\ \hline
+    \textbf{Model}     & \textbf{Batch size}  & \textbf{Allocator}          & \textbf{Images/sec}\footnote{Average of 5 runs}         \\ \hline
     ResNet-50 & $16$        & \texttt{BFCMalloc} & \resnettimebfc     \\ \cline{3-4} 
               &             & \texttt{CuMalloc}  & \resnettimecuda    \\ \cline{3-4} 
               &             & \texttt{Halloc}    & \resnettimehalloc  \\ \hline
@@ -249,12 +278,30 @@ TensorFlow uses NVIDIA CUDA as a GPU library, and \texttt{BFCAllocator} or \text
 
 \metroset{block=fill}
 
-\begin{figure}
-  \centering
-    \includegraphics[width=\textwidth]{../Quantitative_Python/histogram.pdf}
-  \caption{Object sizes requested for allocation (simulated data)}
-  \label{fig:hist}
-\end{figure}
+% \begin{exampleblock}{Benchmark Results}
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{Results of parameter sweep for \texttt{Halloc} on AlexNet. Only a single parameter was changed from the default at a time, with the others at their default value. The four rightmost columns show a linear model fit to the data.}
+\vspace{-10pt}
+\label{tab:parametersweep}
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\textbf{Parameter}        & \textbf{Coefficient} & \textbf{Standard error} & \textbf{t-score} & \textbf{p-score} \\ \hline
+Intercept                 & $36.6428$     & $2.561$          & $14.306$  & $0.000$   \\ \hline
+\texttt{HALLOC\_FRACTION} & $0.3146$      & $0.389$          & $0.808$   & $0.422$   \\ \hline
+\texttt{BUSY\_FRACTION}   & $-4.2388$     & $2.840$          & $-1.493$  & $0.141$   \\ \hline
+\texttt{ROOMY\_FRACTION}  & $4.5185$      & $1.702$          & $2.654$   & $0.010$   \\ \hline
+\texttt{SPARSE\_FRACTION} & $1.5030$      & $1.501$          & $1.001$   & $0.321$   \\ \hline
+\texttt{MAX\_BLOCK\_SZ}   & $-6.755e-05$  & $6.59e-05$       & $-1.026$  & $0.309$   \\ \hline
+\texttt{MAX\_NSIZES}      & $0.0015$      & $0.002$          & $0.782$   & $0.437$   \\ \hline
+\texttt{MAX\_NCHUNK\_IDS} & $0.0076$      & $0.008$          & $0.940$   & $0.351$   \\ \hline
+\texttt{BLOCK\_STEP}      & $0.0016$      & $0.004$          & $0.403$   & $0.688$   \\ \hline
+\texttt{MIN\_BLOCK\_SZ}   & $0.0021$      & $0.002$          & $1.115$   & $0.269$   \\ \hline
+\end{tabular}
+\end{table}
+% \end{exampleblock}
 
 \end{frame}
 
@@ -269,6 +316,24 @@ TensorFlow uses NVIDIA CUDA as a GPU library, and \texttt{BFCAllocator} or \text
 % \end{alertblock}
 
 % \end{frame}
+
+\begin{frame}[fragile]{Conclusions}
+
+\metroset{block=fill}
+
+\begin{alertblock}{Memory Allocation Pattern}
+For both models a large part of the allocations are small objects. For ResNet-50 $19\%$ of the allocations is $16$ bytes or smaller, for AlexNet this is $14\%$. The percentage of allocations that would be handled by \texttt{Halloc} is $48\%$ for ResNet-50 and $30\%$ for AlexNet.
+\end{alertblock}
+
+\begin{alertblock}{Benchmarks}
+Even though our assumptions with respect to the memory allocation pattern turned out to be valid, our implementation of \texttt{Halloc} was not faster than the standard allocator.
+\end{alertblock}
+
+\begin{alertblock}{Parameter Sweep}
+The \texttt{ROOMY\_FRACTION} has a p-score of $0.01$, from which we can reject the hypothesis that the \texttt{ROOMY\_FRACTION} does not have an effect on the speed of the benchmark.
+\end{alertblock}
+
+\end{frame}
 
 \begin{frame}[fragile]{Future Work}
 
@@ -290,6 +355,17 @@ Machine Learning models can have many runtime configurable options. These can al
   \centering
     \includegraphics[width=\textwidth]{images/gpx.png}
 \end{figure}
+
+\end{frame}
+
+\begin{frame}[fragile]{Bibliography}
+
+\begin{alertblock}{Bibliography}
+[1] M. Vinkler and V. Havran, “Register efficient dynamic memory allocator for GPUs” , Computer Graphics Forum, vol. 34, no. 8, pp. 143–154, 2015. [Online]. Available: \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/cgf.12666}
+
+[2] A. Adinetz, “Halloc: A High-Throughput Dynamic Memory Allocator for GPGPU Architectures,” 2014 [Online]. Available:
+\url{http://on-demand.gputechconf.com/gtc/2014/presentations/S4271-halloc-high-throughput-dynamic-memory-allocator.pdf. [Accessed: 07-Jan-2019]}
+\end{alertblock}
 
 \end{frame}
 
