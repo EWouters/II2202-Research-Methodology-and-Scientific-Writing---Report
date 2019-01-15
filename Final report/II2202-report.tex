@@ -4,7 +4,6 @@
 %% revised  2018.08.26
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-
 \documentclass[12pt,twoside]{article}
 
 \usepackage[paper=a4paper,dvips,top=1.5cm,left=1.5cm,right=1.5cm,
@@ -189,7 +188,7 @@
 \begin{abstract}
 \label{sec:abstract}
 
-This paper compares three dynamic memory allocators designed for running on GPUs and select the best performing allocator for TensorFlow’s Convolutional Neural Network (CNN) benchmark, running the ResNet-50 and AlexNet models. Allocators that are considered are \texttt{BFCMalloc}, \texttt{CUDAMalloc} and \texttt{Halloc}. The The main metric of comparison is the number of images per second processed by the benchmark. Other metrics studied are: object sizes requested for allocation and the impact of several parameters of \texttt{Halloc} on the speed of the benchmark. Previous research shows that \texttt{Halloc} performs well on workloads with many small allocations, whereas \texttt{CUDAMalloc} performs slower for the same workload\cite{Vinkler2015}. We show that ResNet-50 and AlexNet do have this type of workload. Our implementation of \texttt{Halloc} is $13\%$ slower than \texttt{BFCMalloc} due to inefficent use of the CUDA library, which causes unnecessary overhead. We also provide a statistical model that shows that the occupancy fraction at which a slab is considered roomy (\texttt{ROOMY\_FRACTION}) has a significant impact on the speed of the benchmark.
+This paper compares three dynamic memory allocators designed for running on GPUs and select the best performing allocator for TensorFlow’s Convolutional Neural Network (CNN) benchmark, running the ResNet-50 and AlexNet models. Allocators that are considered are \texttt{BFCMalloc}, \texttt{CUDAMalloc} and \texttt{Halloc}. The main metric of comparison is the number of images per second processed by the benchmark. Other metrics studied are: object sizes requested for allocation and the impact of several parameters of \texttt{Halloc} on the speed of the benchmark. Previous research shows that \texttt{Halloc} performs well on workloads with many small allocations, whereas \texttt{CUDAMalloc} performs slower for the same workload\cite{Vinkler2015}. We show that ResNet-50 and AlexNet do have this type of workload. Our implementation of \texttt{Halloc} is $13\%$ slower than \texttt{BFCMalloc} due to inefficent use of the CUDA library, which causes unnecessary overhead. We also provide a statistical model that shows that the occupancy fraction, at which a slab is considered roomy (\texttt{ROOMY\_FRACTION}), has a significant impact on the speed of the benchmark.
 
 
 \textbf{Keywords:} Algorithm, Performance, Machine learning, GPU, Dynamic memory, Allocation, TensorFlow
@@ -208,6 +207,7 @@ This paper compares three dynamic memory allocators designed for running on GPUs
 \item[CPU]                  Central Processing Unit
 \item[CUDA]                 Compute Unified Device Architecture
 \item[GPU]                  Graphics Processing Unit
+\item[IoT]                  Internet of Things
 \item[ML]                   Machine Learning
 \item[SIMD]                 Single-Instruction Multiple-Data
 \end{basedescript}
@@ -220,7 +220,7 @@ This paper compares three dynamic memory allocators designed for running on GPUs
 %% Longer problem statement
 %% General introduction to the area
 
-\citeauthor{mach-learning-matters} (\citeyear{mach-learning-matters}) \cite{mach-learning-matters} says that "much of machine learning research is inspired by weighty problems", such research trying to solve issues from biology, medicine, finance, astronomy, agriculture etc. Indeed, machine learning is one of the technologies which succeeds to influence the real-world in a major way, helping with concrete issues such as: water pipe risk assessments \cite{water-pipe-risk}, detecting aviation turbulence \cite{aviation-turbulence}, medicine/drug discovery \cite{drug-discovery} and so on. It is therefore important to work on achieving better performances of the underlying processes that stand behind such a complex technology, with such a big impact on our society. Machine learning (ML) is empowering smartphones \cite{google-visual-core} and IoT devices \cite{visual-core-iot} today, as well, meaning improving the performances of ML algorithms can also lower power consumption of such devices.
+\citeauthor{mach-learning-matters} (\citeyear{mach-learning-matters}) \cite{mach-learning-matters} says that "much of machine learning (ML) research is inspired by weighty problems", such research trying to solve issues from biology, medicine, finance, astronomy, agriculture etc. Indeed, machine learning  is one of the technologies which succeeds to influence the real-world in a major way, helping with concrete issues such as: water pipe risk assessments \cite{water-pipe-risk}, detecting aviation turbulence \cite{aviation-turbulence}, medicine/drug discovery \cite{drug-discovery} and so on. It is therefore important to work on achieving better performances of the underlying processes that stand behind such a complex technology, with such a big impact on our society. Machine learning) is empowering smartphones \cite{google-visual-core} and Internet of Things (IoT) devices \cite{visual-core-iot} today, as well, meaning improving the performances of ML algorithms can also lower power consumption of such devices.
 
 We aim to improve machine learning by touching one of the basic computing techniques it uses: the dynamic memory allocation that happens on the graphics processing unit (GPU). 
 
@@ -228,7 +228,7 @@ In the present work, we consider \texttt{Halloc} \cite{halloc-paper} to replace 
 
 We consider \texttt{Halloc} after a thorough search of GPU dynamic memory allocators that are publicly available today. We describe in the paper why we chose \texttt{Halloc} as our main algorithm for the study. We compile a TensorFlow version that integrates \texttt{Halloc} as its main choice for GPU dynamic memory allocation and run the recommended benchmark program by the TensorFlow team, using the metric "images per second" to study wanted performance changes.
 
-TensorFlow, its benchmark, AlexNet (the CNN model ran by the benchmark) and \texttt{Halloc} are all described under the sub-section \textit{\ref{sec:theoretical-framework} \nameref{sec:theoretical-framework}} of this \textit{\nameref{sec:introduction}} section. In section \ref{sec:questions}, \textit{\nameref{sec:questions}}, it is laid out the concrete goals of this study, as well as some predictions we can make. Section \ref{sec:methods}, \textit{\nameref{sec:methods}}, includes the system setup on which the the tests were executed, as well as the description of the test paradigm this study entails. Section \ref{sec:results-and-analysis}, \textit{\nameref{sec:results-and-analysis}}, includes the final graphs and tables with data after an extensive run of our tests. Finally, under the section \ref{sec:discussion}, \textit{\nameref{sec:discussion}}, we draw a conclusion of the impact we observe when using TensorFlow with \texttt{Halloc}. 
+TensorFlow, its benchmark, AlexNet (the CNN model ran by the benchmark) and \texttt{Halloc} are all described under the sub-section \textit{\ref{sec:theoretical-framework} \nameref{sec:theoretical-framework}} of this \textit{\nameref{sec:introduction}} section. In section \ref{sec:questions}, \textit{\nameref{sec:questions}}, it is laid out the concrete goals of this study, as well as some predictions we can make. Section \ref{sec:methods}, \textit{\nameref{sec:methods}}, includes the system setup on which the tests were executed, as well as the description of the test paradigm this study entails. Section \ref{sec:results-and-analysis}, \textit{\nameref{sec:results-and-analysis}}, includes the final graphs and tables with data after an extensive run of our tests. Finally, under the section \ref{sec:discussion}, \textit{\nameref{sec:discussion}}, we draw a conclusion of the impact we observe when using TensorFlow with \texttt{Halloc}. 
 
 \section{Theoretical framework}
 \label{sec:theoretical-framework}
@@ -455,7 +455,7 @@ It is relevant to state that this field is rapidly developing. There are many ve
 \label{sec:results-and-analysis}
 
 \subsubsection*{Memory Allocation Pattern}
-Profiling a single iteration of TensorFlow's benchmark provided enough insight in the memory allocation pattern for matching with a dynamic allocation algorithm from the literature study. In order to measure the memory allocation pattern of a complete run of the benchmark, we modified the source code of TensorFlow to write all the sizes of the allocations to a file. The results of the memory allocation analysis can be found in figure \ref{fig:hist}. This figure shows that in both models small objects get allocated over an order of magnitude more often than big objects. The effect is strongest for ResNet-50. For ResNet-50 $19\%$ of the allocations are $16$ bytes or smaller while for AlexNet that fraction is $14\%$. The percentage of allocations that would be handled by \texttt{Halloc} is $48\%$ for ResNet-50 and $30\%$ for AlexNet.
+Profiling a single iteration of TensorFlow's benchmark provided enough insight in the memory allocation pattern for matching with a dynamic allocation algorithm from the literature study. In order to measure the memory allocation pattern of a complete run of the benchmark, we modified the source code of TensorFlow to write all the sizes of the allocations to a file. The results of the memory allocation analysis can be found in figure \ref{fig:hist}. This figure shows that in both models small objects get allocated over an order of magnitude more often than big objects. The effect is strongest for ResNet-50. For ResNet-50, $19\%$ of the allocations are $16$ bytes or smaller while for AlexNet that fraction is $14\%$. The percentage of allocations that would be handled by \texttt{Halloc} is $48\%$ for ResNet-50 and $30\%$ for AlexNet.
 
 \begin{figure}[!ht]
   \centering
@@ -472,7 +472,7 @@ Profiling a single iteration of TensorFlow's benchmark provided enough insight i
 \end{figure}
 
 \subsubsection*{Benchmarks}
-In our comparisons, we have found TensorFlow's default allocator, \texttt{BFCAllocator}, to attain \resnettimebfc\ images per second when processing the ResNet-50 model benchmark, while \texttt{CUDAMalloc} attains only \resnettimecuda\ images per second. This proves that there is significance in such a research, as choosing the right dynamic memory allocator can have a large impact on the performance of high end algorithms and computing techniques.
+We have listed an exerpt of the modification done in appendix \ref{apx:gpu-cudamalloc}. In our comparisons, we have found TensorFlow's default allocator, \texttt{BFCAllocator}, to attain \resnettimebfc\ images per second when processing the ResNet-50 model benchmark, while \texttt{CUDAMalloc} attains only \resnettimecuda\ images per second. This proves that there is significance in such a research, as choosing the right dynamic memory allocator can have a large impact on the performance of high end algorithms and computing techniques.
 
 The benchmarks are shown in table \ref{tab:results}. The "images/sec" column shows the average amount of images that are processed per second for the different models and allocators.
 
@@ -525,7 +525,7 @@ Intercept                 &           &        &        &         & $36.6428$   
 
 In the current study, we attempt to improve TensorFlow's performance through changing its dynamic memory allocation algorithms that come by default. For this, we find a new allocator for replacement by first studying the documentation of different algorithms that are available publicly: \texttt{XMalloc} \cite{xmalloc}, \texttt{ScatterAlloc} \cite{scatter-alloc}, \texttt{FDGMalloc} \cite{fdgmalloc}, \texttt{Halloc} \cite{halloc-paper} and \texttt{CMalloc} \cite{Vinkler2015}. We motivate in section \ref{sec:theoretical-framework} that, due to the high speed of allocation it attains, \texttt{Halloc} is to be used in our study. \cite{halloc-paper} shows that \texttt{Halloc} is 1000 times faster than \texttt{CUDAMalloc} (one of TensorFlow's defaults), meaning it should, in theory, improve performance just by introducing it to TensorFlow.
 
-Furthermore, \texttt{Halloc} favours small-sized allocations, which we prove that it happens frequently when executing TensorFlow's benchmark for the CNN models ResNet-50 and AlexNet, explained under section \ref{sec:results-and-analysis}. We collect \texttt{Halloc}'s latest version and introduce it in TensorFlow's source code. After our own benchmarking however, we find out that our modification does not, in fact, improve performance in comparison to the default allocators.
+Furthermore, \texttt{Halloc} favours small-sized allocations, which we prove that it happens frequently when executing TensorFlow's benchmark for the CNN models ResNet-50 and AlexNet, explained under section \ref{sec:results-and-analysis}. We collect \texttt{Halloc}'s latest version and introduce it in TensorFlow's source code. After our own benchmarking however, we find out that our modification (listed in appendix \ref{apx:gpu-cudamalloc}) does not, in fact, improve performance in comparison to the default allocators.
 
 The reason for the regression in performance is due to the fact that the implementation made for this study makes calls to the allocator in a fashion that introduces extra overhead, in contrast to the calls for allocation and deallocation of the initial algorithms. It is our opinion that the allocator class used by TensorFlow for using allocator functions is designed to make calls from the CPU (and not the GPU as we expected), where it directly computes address pointers for GPU memory (using CPU resources). For example, we believe that the logic of \texttt{BFCAlloc} is executed entirely on the CPU, not using specific GPU (device) functions.
 
@@ -559,7 +559,6 @@ Machine Learning models can have many runtime configurable options. These can al
 
 \begin{verbatim}
 #!/bin/bash
-
 WORKDIR="${HOME}/GPU_Malloc"
 PYTHON_BIN="${HOME}/anaconda3/envs/tf_dev_3.5/bin/python"
 
@@ -602,22 +601,24 @@ ${PYTHON_BIN} -m pip uninstall TensorFlow -y
 ${PYTHON_BIN} -m pip install /tmp/TensorFlow_pkg/TensorFlow-*
 
 # Optionally, run the benchmarks as well, selecting the allocator
-# The allocators' keywords for TF_GPU_ALLOCATOR available are: cuda_malloc, bfcmalloc
+# The allocators' keywords for TF_GPU_ALLOCATOR available are: cuda_malloc,
+#   bfcmalloc
 #cd "${WORKDIR}"/benchmarks/scripts/tf_cnn_benchmarks
 #TF_GPU_ALLOCATOR="cuda_malloc" ${PYTHON_BIN} tf_cnn_benchmarks.py
    --num_gpus=1 --batch_size=16 --model=resnet50 
    --variable_update=parameter_server
 \end{verbatim}
 
-\section{Code excerpt from TensorFlow}
-\label{app:gpu-cudamalloc}
-This appendix shows how the \texttt{Halloc} code was integrated into TensorFlow. This excerpt was taken from the file \texttt{gpu\_cudamalloc\_allocator.cc}.
+\section{Code excerpt of the modification done to TensorFlow}
+\label{apx:gpu-cudamalloc}
+This appendix shows how the \texttt{Halloc} code was integrated into TensorFlow. This excerpt was taken from the file \texttt{tensorflow/core/common\_runtime/gpu/gpu\_cudamalloc\_allocator.cc}.
 
 \subsection{Original code}
 \label{app:gpu-cudamalloc-original}
 \ldots
 \begin{verbatim}
-void* GPUcudaMallocAllocator::AllocateRaw(size_t alignment, size_t num_bytes) {
+void* GPUcudaMallocAllocator::AllocateRaw(size_t alignment, 
+   size_t num_bytes) {
 #ifdef GOOGLE_CUDA
   // allocate with cudaMalloc
   se::cuda::ScopedActivateExecutorContext scoped_activation{stream_exec_};
@@ -644,7 +645,8 @@ void* *d_rv;
 size_t *d_num_bytes;
 bool* d_manual_free;
 
-void* GPUcudaMallocAllocator::AllocateRaw(size_t alignment, size_t num_bytes) {
+void* GPUcudaMallocAllocator::AllocateRaw(size_t alignment, 
+  size_t num_bytes) {
 #ifdef GOOGLE_CUDA
   // allocate with cudaMalloc
   se::cuda::ScopedActivateExecutorContext scoped_activation{stream_exec_};
@@ -657,7 +659,8 @@ void* GPUcudaMallocAllocator::AllocateRaw(size_t alignment, size_t num_bytes) {
   // GPU kernell call
   if(num_bytes <= MAX_BLOCK_SZ) {
     // Copy relevant parameters to device
-    cudaMemcpy(d_num_bytes, &num_bytes, sizeof(size_t), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_num_bytes, &num_bytes, sizeof(size_t), 
+       cudaMemcpyHostToDevice);
 
     hamalloc<<<1,1>>>(d_rv, d_num_bytes);
 
@@ -667,7 +670,6 @@ void* GPUcudaMallocAllocator::AllocateRaw(size_t alignment, size_t num_bytes) {
   else {
     CUdeviceptr rv_temp=0;
     cuMemAlloc(&rv_temp, num_bytes);
-    //cudaDeviceSynchronize();
     rv=reinterpret_cast<void*>(rv_temp);
   }
 
